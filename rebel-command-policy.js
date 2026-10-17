@@ -1,4 +1,4 @@
-import {distance,GRID,elevationAt} from '/rebel-terrain.js';
+import {distance,GRID,elevationAt} from './rebel-terrain.js';
 export const POLICY_FIELDS={tempo:{label:'وتيرة العمليات',values:{auto:'تقدير القيادة',cautious:'تقدم حذر',balanced:'متوازن',press:'ضغط متواصل'}},civilians:{label:'حماية المدنيين',values:{auto:'تقدير القيادة',strict:'قيود مشددة',balanced:'حماية متوازنة',risk:'قبول مخاطر أعلى'}},airRisk:{label:'مخاطر الطيران',values:{auto:'تقدير القيادة',low:'حفظ الطائرات',balanced:'متوازن',high:'قبول مخاطرة أعلى'}},truce:{label:'التفاوض على الهدنة',values:{auto:'تقدير القيادة',open:'تفضيل إعادة التنظيم',firm:'الحفاظ على الزخم'}},reserve:{label:'الاحتياط المحلي',values:{auto:'تقدير القيادة',strong:'احتياط أكبر',balanced:'متوازن',lean:'احتياط محدود'}}};
 export function policy(b,side='blue'){return side==='blue'?(b.commandPolicy??={}):{};}
 export function setCommandPolicy(b,key,value){if(!POLICY_FIELDS[key]?.values[value])return false;policy(b)[key]=value;return true;}

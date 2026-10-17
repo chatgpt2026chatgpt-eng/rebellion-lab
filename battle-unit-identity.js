@@ -1,4 +1,4 @@
-import {armorTier} from '/battle-ground-rules.js';
+import {armorTier} from './battle-ground-rules.js';
 export function decorateIdentity(g,unit,el,rebel=false) {
   const blue=unit.side==='blue',tier=armorTier(unit),badge=el('g',{class:'faction-identity','pointer-events':'none'},g);
   el('rect',{x:-79,y:-65,width:158,height:26,rx:5,class:'identity-banner'},badge);

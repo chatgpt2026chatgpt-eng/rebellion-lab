@@ -1,4 +1,4 @@
-import {center} from '/rebel-terrain.js';
+import {center} from './rebel-terrain.js';
 const NS='http://www.w3.org/2000/svg';
 function el(tag,attrs,parent){const n=document.createElementNS(NS,tag);for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);parent.append(n);return n;}
 let currentContext=null,installed=false,chooser=null;

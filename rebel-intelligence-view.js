@@ -1,8 +1,8 @@
-import {presentSituation,holdIntelligence} from '/rebel-situation-reports.js';
-import {reportsFor,orderIntel,communicationsState,MISSION_TYPES,officerState,observeVisible} from '/rebel-intelligence.js';
-import {LEADERS,engineerRepairJobs,queueEngineerRepair} from '/rebel-campaign.js';
-import {officerPortrait} from '/rebel-officer-art.js';
-import {distance} from '/rebel-terrain.js';
+import {presentSituation,holdIntelligence} from './rebel-situation-reports.js';
+import {reportsFor,orderIntel,communicationsState,MISSION_TYPES,officerState,observeVisible} from './rebel-intelligence.js';
+import {LEADERS,engineerRepairJobs,queueEngineerRepair} from './rebel-campaign.js';
+import {officerPortrait} from './rebel-officer-art.js';
+import {distance} from './rebel-terrain.js';
 let ctx,panel,brief,tab='reports',chosen=null,lastBattle,lastTurn=0,lastSignature='',briefTimer=null;
 function e(tag,text,cls){const n=document.createElement(tag);if(text!=null)n.textContent=text;if(cls)n.className=cls;return n;}
 function button(text,fn,disabled=false){const n=e('button',text);n.type='button';n.onclick=fn;n.disabled=disabled;return n;}

@@ -1,9 +1,9 @@
-import {blastCover} from '/rebel-command-policy.js';
-import {fatigueFireFactor,recordMoraleDamage} from '/rebel-morale.js';
-import {commandAttackFactor} from '/rebel-campaign.js';
-import {civilianImpact,assetDamaged} from '/rebel-campaign.js';
-import {artilleryFacilities} from '/rebel-facilities.js';
-import {elevationAt} from '/rebel-terrain.js';
+import {blastCover} from './rebel-command-policy.js';
+import {fatigueFireFactor,recordMoraleDamage} from './rebel-morale.js';
+import {commandAttackFactor} from './rebel-campaign.js';
+import {civilianImpact,assetDamaged} from './rebel-campaign.js';
+import {artilleryFacilities} from './rebel-facilities.js';
+import {elevationAt} from './rebel-terrain.js';
 export const SUPPORT_PROFILES=Object.freeze({fieldArtillery:{range:7,min:2,radius:0,damage:68,splash:0,rounds:1,name:'مدفعية ميدانية'},mortar:{range:4,min:2,radius:1,damage:42,splash:18,rounds:3,name:'هاون'},katyusha:{range:7,min:2,radius:1,damage:62,splash:34,rounds:6,name:'كاتيوشا'}});
 export function droneAllowance(battle,source){if(!source||source.strength<=0)return 0;const cap=source.role==='droneVehicle'?4:1,used=source.droneBudgetTurn===battle.turn?(source.dronesUsedThisTurn??0):source.lastDroneLaunchTurn===battle.turn?1:0;return Math.max(0,Math.min(source.droneStock??0,cap-used));}
 export function spendDrone(battle,source){const used=source.droneBudgetTurn===battle.turn?(source.dronesUsedThisTurn??0):0;source.droneBudgetTurn=battle.turn;source.dronesUsedThisTurn=used+1;}

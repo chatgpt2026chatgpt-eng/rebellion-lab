@@ -1,6 +1,6 @@
-import {staffEffect,staffReview,assignedStaff} from '/rebel-staff-command.js';
+import {staffEffect,staffReview,assignedStaff} from './rebel-staff-command.js';
 // Information is a dated snapshot. Consumers never receive an entity reference.
-import {distance,GRID} from '/rebel-terrain.js';
+import {distance,GRID} from './rebel-terrain.js';
 export const INTEL_PROFILES=Object.freeze({state:{signals:3,human:2,security:3,income:4},rebels:{signals:1,human:3,security:2,income:2},advancedState:{signals:4,human:3,security:4,income:5}});
 export const OFFICERS=Object.freeze({
  armor:{name:'العميد حازم',trait:'قيادة المدرعات',text:'ضرر المدرعات ضمن القيادة +10%؛ لا تتراكم مكافآت القادة.',recovery:2,supply:1,shock:.95,domain:'armor',attack:1.1},

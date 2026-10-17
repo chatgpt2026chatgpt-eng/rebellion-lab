@@ -1,5 +1,5 @@
-import {beginMoraleRound} from '/rebel-morale.js';
-import {distance,RANGES} from '/rebel-terrain.js';
+import {beginMoraleRound} from './rebel-morale.js';
+import {distance,RANGES} from './rebel-terrain.js';
 const snapshot=b=>({turn:b.turn,units:b.units.filter(u=>u.side==='blue').map(u=>({id:u.id,x:u.x,y:u.y,strength:u.strength,role:u.role})),sites:b.sites.map(s=>({id:s.id,owner:s.owner,name:s.name}))});
 export function startSituationRound(b){beginMoraleRound(b);b.situation??={archive:[],sorties:[]};b.situation.before=snapshot(b);}
 export function recordSortie(b,order){if(!order)return;b.situation??={archive:[],sorties:[]};b.situation.sorties.push({turn:b.turn,craft:order.craftId,name:order.name,state:order.state,impacts:order.impacts?.length??0,damage:(order.impacts??[]).reduce((n,i)=>n+(i.damage??0),0)});b.situation.sorties=b.situation.sorties.slice(-80);}

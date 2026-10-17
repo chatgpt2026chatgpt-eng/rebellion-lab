@@ -1,28 +1,28 @@
-import {aircraftMunitionFX,aircraftImpactFX} from '/rebel-air-visual-fx.js';
-import {blastCover} from '/rebel-command-policy.js';
-import {recordSortie} from '/rebel-situation-reports.js';
-import {planAirOrder} from '/rebel-air-doctrine.js';
-import {observeArea,knownTargets} from '/rebel-intelligence.js';
-import {commandAttackFactor} from '/rebel-campaign.js';
-import {makeReconRoute} from '/rebel-recon-route.js';
-import {uavArtwork} from '/rebel-uav-art.js';
-import {inspectCampaign} from '/rebel-campaign-view.js';
-import {seedAirports,syncAirport,airportReady,civilianImpact,supplyDepot} from '/rebel-campaign.js';
-import {facilityTargets,damageFacility} from '/rebel-facilities.js';
-import {VIPER_LOAD,supportRoute,tankerArtwork,viperDetails} from '/rebel-air-support.js';
-import {pickMapTarget} from '/rebel-map-picking.js';
-import {createStealthImpactFX} from '/stealth-impact-fx.js';
-import {AIRPORT_CELLS,GRID as MAP_GRID,movementCost} from '/rebel-terrain.js';
-import {makeTacticalRoute,smoothAircraftRoute,flightPace,paceAt} from '/rebel-tactical-path.js';
-import {tacticalAircraftArt} from '/rebel-tactical-art.js';
-import {isUnitDetected} from '/rebel-artillery-sim.js';
-import {recordEvidence} from '/rebel-command-policy.js';
-import {coverMultiplier} from '/rebel-terrain.js';
-import {impactFX,munitionFX} from '/rebel-combat-fx.js';
-import {pollDefense,finishDefenseFlight} from '/rebel-defense.js';
-import { ARMOR_MODELS, leaveHouse, attemptDroneInterception, hexDistance, damageMapObject } from '/rebel-sim.js';
-import {getArmisticeState,maybeArmisticeIncident,breakArmistice} from '/rebel-political-systems.js';
-import { buildStealthPlan, sampleProfile, trackPath, scheduleStealthPlan } from '/rebel-stealth-flight.js';
+import {aircraftMunitionFX,aircraftImpactFX} from './rebel-air-visual-fx.js';
+import {blastCover} from './rebel-command-policy.js';
+import {recordSortie} from './rebel-situation-reports.js';
+import {planAirOrder} from './rebel-air-doctrine.js';
+import {observeArea,knownTargets} from './rebel-intelligence.js';
+import {commandAttackFactor} from './rebel-campaign.js';
+import {makeReconRoute} from './rebel-recon-route.js';
+import {uavArtwork} from './rebel-uav-art.js';
+import {inspectCampaign} from './rebel-campaign-view.js';
+import {seedAirports,syncAirport,airportReady,civilianImpact,supplyDepot} from './rebel-campaign.js';
+import {facilityTargets,damageFacility} from './rebel-facilities.js';
+import {VIPER_LOAD,supportRoute,tankerArtwork,viperDetails} from './rebel-air-support.js';
+import {pickMapTarget} from './rebel-map-picking.js';
+import {createStealthImpactFX} from './stealth-impact-fx.js';
+import {AIRPORT_CELLS,GRID as MAP_GRID,movementCost} from './rebel-terrain.js';
+import {makeTacticalRoute,smoothAircraftRoute,flightPace,paceAt} from './rebel-tactical-path.js';
+import {tacticalAircraftArt} from './rebel-tactical-art.js';
+import {isUnitDetected} from './rebel-artillery-sim.js';
+import {recordEvidence} from './rebel-command-policy.js';
+import {coverMultiplier} from './rebel-terrain.js';
+import {impactFX,munitionFX} from './rebel-combat-fx.js';
+import {pollDefense,finishDefenseFlight} from './rebel-defense.js';
+import { ARMOR_MODELS, leaveHouse, attemptDroneInterception, hexDistance, damageMapObject } from './rebel-sim.js';
+import {getArmisticeState,maybeArmisticeIncident,breakArmistice} from './rebel-political-systems.js';
+import { buildStealthPlan, sampleProfile, trackPath, scheduleStealthPlan } from './rebel-stealth-flight.js';
 
 
 const NS='http://www.w3.org/2000/svg';
@@ -127,7 +127,7 @@ function ensureRefineryStyle(){if(document.getElementById('enemy-refinery-style'
 function refineryAt(x,y){return (battle?.refineries??[]).find(refinery=>refinery.side==='red'&&refinery.hp>0&&refinery.tiles.some(tile=>tile.x===x&&tile.y===y))||null}
 function refineryLabel(refinery){if(refinery.hp<=0)return'مصفاة النفط · مدمرة';if(refinery.hp<refinery.maxHp*.55)return'مصفاة النفط · متضررة بشدة';if(refinery.ignited)return'مصفاة النفط · تحترق';if(refinery.hp<refinery.maxHp)return'مصفاة النفط · متضررة';return refinery.side==='blue'?'مصفاة النفط الوطنية':'مصفاة النفط · منطقة التمرد'}
 function drawEnemyRefinery(refinery){ensureRefineryStyle();const p=centers[refinery.y]?.[refinery.x];if(!p)return;const g=node('g',{class:'enemy-oil-refinery '+refinery.side+'-owned','data-refinery-id':refinery.id,transform:'translate('+p.x+' '+p.y+') scale(.48)'},groups.sites);refineryVisualNode=g;refinery.node=g;const structure=node('g',{class:'refinery-structure'},g);node('path',{d:'M-275 106L-216 148H235L282 108L238 72H-238Z',class:'refinery-pad'},structure);node('path',{d:'M-223 70H195V113H-223Z',class:'refinery-plant-front'},structure);node('path',{d:'M195 70L235 48V91L195 113Z',class:'refinery-plant-side'},structure);node('path',{d:'M-227 70L-198 47H219L195 70Z',class:'refinery-plant-front'},structure);node('path',{d:'M-165 84H-127V105H-165ZM-80 84H-42V105H-80ZM28 84H66V105H28ZM112 84H150V105H112Z',class:'refinery-dark-window'},structure);const tanks=[[-154,39,55],[-47,44,51],[113,40,59]];for(const [x,y,r]of tanks){const tank=node('g',{transform:'translate('+x+' '+y+')'},structure);node('path',{d:'M'+(-r)+' 0V-37A'+r+' 18 0 0 1 '+r+' -37V0A'+r+' 18 0 0 1 '+(-r)+' 0Z',class:'refinery-tank-wall'},tank);node('ellipse',{cx:0,cy:-37,rx:r,ry:18,class:'refinery-tank-roof'},tank);node('path',{d:'M'+(-r)+' -2A'+r+' 18 0 0 0 '+r+' -2',class:'refinery-tank-seam'},tank);node('path',{d:'M0-54V-66',class:'refinery-pipe'},tank)}const tower=node('g',{transform:'translate(24 -20)'},structure);node('path',{d:'M-30 66L-23-72Q0-94 23-72L30 66Z',class:'refinery-column'},tower);for(const y of [-54,-17,20])node('path',{d:'M-25 '+y+'H25',class:'refinery-column-band'},tower);node('path',{d:'M-20-70Q0-91 20-70',class:'refinery-column-band'},tower);for(const [x,y]of [[-13,-48],[13,-8],[-13,31]])node('rect',{x,y,width:12,height:15,rx:2,class:'refinery-dark-window'},tower);node('path',{d:'M-206 36H-176V16H-98V-4H-46M-92 25H-55V14H-2M76 38H154V16H205',class:'refinery-pipe'},structure);node('path',{d:'M-198 32V-82H-178V-6M174 19V-99H194V45',class:'refinery-column'},structure);node('path',{d:'M-203-82H-173M169-99H199',class:'refinery-column-band'},structure);node('path',{d:'M-232 111L-203 93L-181 99L-166 82L-123 87L-109 105L-77 96L-58 78L-22 89L-9 102L29 98L52 81L93 85L111 102L147 91L166 96L191 86L231 109V122H-232Z',class:'refinery-rubble refinery-collapse-detail'},g);node('path',{d:'M-233 101L-215 80L-198 101L-181 80L-164 101Z',class:'refinery-warning'},structure);node('rect',{x:-230,y:119,width:460,height:45,rx:8,class:'refinery-label-box'},g);const name=node('text',{x:0,y:151,'text-anchor':'middle',class:'refinery-label'},g);name.textContent=refineryLabel(refinery);const health=node('text',{x:0,y:192,'text-anchor':'middle',class:'refinery-hp','data-refinery-health':'true'},g);health.textContent='سلامة المنشأة '+refinery.hp+'/'+refinery.maxHp;if(refinery.hp<refinery.maxHp)for(let i=0;i<Math.min(6,Math.floor((refinery.maxHp-refinery.hp)/45));i++)node('path',{d:'M'+(-205+i*73)+' '+(43+(i%2)*32)+'l17-9 12 7-9 21-17 3Z',class:'refinery-burn-mark'},structure);g.addEventListener('click',event=>{event.stopPropagation();if(!commandMode)status(refineryLabel(refinery)+' · سلامة '+refinery.hp+'/'+refinery.maxHp+'.')});return g}
-import { mapCellInfo as refineryMapCellInfo } from '/rebel-sim.js';
+import { mapCellInfo as refineryMapCellInfo } from './rebel-sim.js';
 /* AIR_BATTLE_REFINERY_COMPACT_V2 */
 function chooseRefineryCell(){
  if(!battle.mapCells)refineryMapCellInfo(battle,0,0);
@@ -275,7 +275,7 @@ function findDefenses(side='blue'){return battle.airDefenses.filter(d=>d.side!==
 function defenseForFlight(flight,point){return pollDefense(flight,point)}
 function showIntercept(defense,planeAt){/* The defense engine draws the travelling interceptor and its impact. */}
 function showImpact(point,label,kind='normal'){const g=node('g',{class:`air-battle-impact ${kind}`,transform:`translate(${point.x} ${point.y})`},groups.effects);node('path',{d:'M-34 10L-23-1L-18-16L-7-6L4-24L8-7L24-11L19 2L33 11L20 20L-17 23Z',class:'air-impact-smoke'},g);node('path',{d:'M-11 7L-18-5L-8-3L-3-18L4-4L13-9L10 1L19 8L4 12L-4 20Z',class:'air-impact-flash'},g);const t=node('text',{x:0,y:43,'text-anchor':'middle',class:'air-impact-label'},g);t.textContent=label;setTimeout(()=>g.remove(),2400)}
-import { stealthUnitDamage, applyStealthUnitDamage } from '/rebel-stealth-damage.js';
+import { stealthUnitDamage, applyStealthUnitDamage } from './rebel-stealth-damage.js';
 /* AIR_BATTLE_STEALTH_DAMAGE_V1 */
 let stealthFx=null,stealthDirty=null,stealthRefreshTimer=0;
 function impactEngine(){return stealthFx??=createStealthImpactFX(groups.effects)}

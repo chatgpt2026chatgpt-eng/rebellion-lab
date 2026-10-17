@@ -1,8 +1,8 @@
-import {isUnitDetected} from '/rebel-artillery-sim.js';
-import {policy,civilianStrikeAllowed,evidencePermission,recordEvidence,truceMoveRisk,truceWithdrawal} from '/rebel-command-policy.js';
-import {getArmisticeState} from '/rebel-political-systems.js';
-import {knownTargets} from '/rebel-intelligence.js';
-import {distance,GRID} from '/rebel-terrain.js';
+import {isUnitDetected} from './rebel-artillery-sim.js';
+import {policy,civilianStrikeAllowed,evidencePermission,recordEvidence,truceMoveRisk,truceWithdrawal} from './rebel-command-policy.js';
+import {getArmisticeState} from './rebel-political-systems.js';
+import {knownTargets} from './rebel-intelligence.js';
+import {distance,GRID} from './rebel-terrain.js';
 const IMPORTANCE={command:92,factory:88,airDefense:92,supply:72,airport:82,radar:82,armor:64,convoy:56,unit:40};
 const DURABILITY={command:240,factory:280,airDefense:100,supply:150,airport:300,radar:90,armor:150,convoy:65,unit:75};
 // Only the recorded report is used: no lookup of a concealed enemy's present position or health.

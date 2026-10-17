@@ -1,4 +1,4 @@
-import {distance} from '/rebel-terrain.js';
+import {distance} from './rebel-terrain.js';
 const clamp=n=>Math.max(0,Math.min(100,n));
 export function beginMoraleRound(b){b.frontMorale??={};b.frontMorale.before=b.units.map(u=>({id:u.id,side:u.side,x:u.x,y:u.y,hp:u.hp??0,maxHp:u.maxHp??1,ammo:u.ammo??0,kills:u.kills??0,droneStock:u.droneStock??0,combatCredit:u.combatCredit??0}));for(const u of b.units){u.fatigue??=0;u.combatStreak??=0;}}
 export function fatigueFireFactor(u){return 1-Math.min(.18,(u.fatigue??0)*.0018);}

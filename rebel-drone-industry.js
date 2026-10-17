@@ -1,5 +1,5 @@
-import {supplyDepot} from '/rebel-campaign.js';
-import {GRID} from '/rebel-terrain.js';
+import {supplyDepot} from './rebel-campaign.js';
+import {GRID} from './rebel-terrain.js';
 // Manufacturing and delivery use physical, destructible map assets.
 export const droneFactoryArt=`<g stroke="#344443" stroke-width="2" stroke-linejoin="round"><ellipse cy="36" rx="72" ry="9" fill="#263432" opacity=".25"/><path d="M-64-8L-14-27L61-7V32H-64Z" fill="#b7b399"/><path d="M-64-8L-44-28L-23-18L-4-36L20-24L39-36L61-7Z" fill="#798d86"/><path d="M39-36L61-7V32L39 22Z" fill="#71817a"/><path d="M-52-20V-56H-39V-18M-28-18V-44H-17V-23" fill="#aca993"/><path d="M-54-56H-37M-30-44H-15" stroke="#586962" stroke-width="4"/><path d="M-49 7H-31V31H-49M-18 8H2V31H-18M12 7H31V17H12" fill="#40595d"/><path d="M-62-4H36M-47 13H-33M-16 15H0" stroke="#dedbc0"/><path d="M-2-16H28M13-24V-7M4-23L22-9M4-9L22-23" fill="none" stroke="#dfe1c8" stroke-width="3"/></g>`;
 export function seedDroneIndustry(battle,{canPlace,place,neighbors,path}){

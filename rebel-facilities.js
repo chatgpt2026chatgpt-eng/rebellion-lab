@@ -1,5 +1,5 @@
-import {recordMoraleDamage} from '/rebel-morale.js';
-import {assetDamaged,upgradeStructures,commandAttackFactor} from '/rebel-campaign.js';
+import {recordMoraleDamage} from './rebel-morale.js';
+import {assetDamaged,upgradeStructures,commandAttackFactor} from './rebel-campaign.js';
 // Shared by Air Battle and Rebellion only. Pure rules; no DOM or global state.
 export const ARMOR_TIERS = Object.freeze({abrams:3,t90m:3,type99a:2,bradley:1,bmp3:1,zbd04:1});
 export const armorTier = unit => ARMOR_TIERS[unit?.modelId] ?? 0;

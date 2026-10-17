@@ -1,4 +1,4 @@
-import {tacticalAircraftArt} from '/rebel-tactical-art.js';
+import {tacticalAircraftArt} from './rebel-tactical-art.js';
 // Map-scale aircraft support. Ammunition counts are a mixed AH-1Z load;
 // distances, damage and tanker bonus are game balance values, not specifications.
 export const VIPER_LOAD=Object.freeze({missiles:8,rockets:14,rounds:650});

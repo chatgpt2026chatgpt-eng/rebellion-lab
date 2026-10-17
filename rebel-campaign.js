@@ -1,7 +1,7 @@
-import {staffEffect,staffReview,assignedStaff} from '/rebel-staff-command.js';
-import {OFFICERS,initIntelligence,syncPeople,officerAvailable} from '/rebel-intelligence.js';
+import {staffEffect,staffReview,assignedStaff} from './rebel-staff-command.js';
+import {OFFICERS,initIntelligence,syncPeople,officerAvailable} from './rebel-intelligence.js';
 // REBEL-CAMPAIGN-13. Pure campaign state; no timers or rendering side effects.
-import {GRID,distance,terrainAt,movementCost,center,RIVER_POINTS,ROAD_LINES} from '/rebel-terrain.js';
+import {GRID,distance,terrainAt,movementCost,center,RIVER_POINTS,ROAD_LINES} from './rebel-terrain.js';
 export const SELECTABLE_LEADERS=['steadfast','quartermaster','support','medic','armor','artillery','aviation','intelligence'];
 export const LEADERS=Object.freeze({
  ...OFFICERS,

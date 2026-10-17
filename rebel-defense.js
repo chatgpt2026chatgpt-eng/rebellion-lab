@@ -1,4 +1,4 @@
-import {makeMissileVisual,updateMissileVisual,fadeMissileTrail,impactFX} from '/rebel-combat-fx.js';
+import {makeMissileVisual,updateMissileVisual,fadeMissileTrail,impactFX} from './rebel-combat-fx.js';
 import {DEFENSE_TYPES,defenseType,operational,rounds,createDefenseEngine} from './rebel-defense-core.js';
 export {DEFENSE_TYPES};
 let context=null,engine=null,raf=0,last=0,lastUI=0,selected=null,coverage='all',panel=null,rangeLayer=null,trackLayer=null,missileLayer=null;

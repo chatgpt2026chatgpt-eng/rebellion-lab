@@ -1,4 +1,4 @@
-import {GRID,mountainCells,terrainAt,movementCost,distance,RANGES} from '/rebel-terrain.js';
+import {GRID,mountainCells,terrainAt,movementCost,distance,RANGES} from './rebel-terrain.js';
 const rangeOf=p=>RANGES.map(r=>({r,d:Math.min(...r.points.map(([x,y])=>distance(p,{x,y})))})).sort((a,c)=>a.d-c.d)[0]?.r;
 const active=d=>d.isCave&&d.side==='red'&&!d.disabled&&(d.structureHp??1)>0;
 export function seedMountainCaves(b){

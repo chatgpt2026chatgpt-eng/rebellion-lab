@@ -1,9 +1,9 @@
-import {renderIntelligence,appendEngineerJobs} from '/rebel-intelligence-view.js';
-import {officerAvailable,officerState,knownTargets} from '/rebel-intelligence.js';
-import {officerPortrait} from '/rebel-officer-art.js';
-import {LEADERS,SELECTABLE_LEADERS,assignPostLeader,leadership,supplyDepot,repairCheck,repairTarget,orderRepair,provideAid,changeLeader,resupplyStructure,allStructures,updateMemory} from '/rebel-campaign.js';
-import {renderAirportGround,airportPartArt} from '/rebel-airport-view.js';
-import {center,distance} from '/rebel-terrain.js';
+import {renderIntelligence,appendEngineerJobs} from './rebel-intelligence-view.js';
+import {officerAvailable,officerState,knownTargets} from './rebel-intelligence.js';
+import {officerPortrait} from './rebel-officer-art.js';
+import {LEADERS,SELECTABLE_LEADERS,assignPostLeader,leadership,supplyDepot,repairCheck,repairTarget,orderRepair,provideAid,changeLeader,resupplyStructure,allStructures,updateMemory} from './rebel-campaign.js';
+import {renderAirportGround,airportPartArt} from './rebel-airport-view.js';
+import {center,distance} from './rebel-terrain.js';
 export const commandArt=`<g stroke="#263b40" stroke-width="2.2" stroke-linejoin="round"><ellipse cy="37" rx="59" ry="8" fill="#152f36" opacity=".3"/><path d="M-55 31V-5L-30-31L5-5V31Z" fill="#9da38a"/><path d="M-30-31L24-28L53-3L5-5Z" fill="#c4bd98"/><path d="M5-5L53-3V31H5Z" fill="#7a8b7a"/><path d="M-40 31V4L-27-9L-14 4V31" fill="#364e50"/><path d="M17 5H40V19H17Z" fill="#2d6269"/><path d="M27-28V-55M27-53H49L42-45H27" fill="#e7cb7e"/><path d="M-49-16V-48M-54-42Q-49-52-44-42M44 31L57 39M-49 31L-59 39" fill="none"/><path d="M20 12H36M28 7V17" stroke="#b4e4dc"/></g>`;
 export const jammerArt=`<g stroke="#2c4249" stroke-width="2.3" stroke-linejoin="round"><path d="M-56 9V-17H17V1H43L55 14V29H-56Z" fill="#9ca78e"/><path d="M21 2H37L46 13H21Z" fill="#355963"/><path d="M-49-12H8V13H-49Z" fill="#6e8378"/><circle cx="-34" cy="29" r="11" fill="#26363a"/><circle cx="37" cy="29" r="11" fill="#26363a"/><path d="M-18-17V-50M-33-42Q-18-66-3-42M-40-48Q-18-79 4-48M-23-54H-13" fill="none" stroke="#bdd6ce"/><path d="M-40-4H0M-40 4H0" stroke="#bfc5a4"/></g>`;
 export function campaignArt(kind){return kind==='commander'?commandArt:kind==='jammer'?jammerArt:null;}

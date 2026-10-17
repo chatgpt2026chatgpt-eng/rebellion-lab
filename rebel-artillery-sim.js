@@ -1,6 +1,6 @@
-import {contactVisible,supportCheck,supportFire} from '/rebel-support-rules.js';
-import {artilleryFacilities} from '/rebel-facilities.js';
-import {THEATER as MAP_THEATER,GRID as MAP_GRID,CITIES as MAP_CITIES,mountainCells,elevationAt,passAt,terrainAt,movementCost,terrainSight,coverMultiplier,ROAD_LINES as MAP_ROADS,RIVER_POINTS as MAP_RIVER,terrainDescription,CITY_LAYOUT,AIRPORT_CELLS,RANGES,PASSES} from '/rebel-terrain.js';
+import {contactVisible,supportCheck,supportFire} from './rebel-support-rules.js';
+import {artilleryFacilities} from './rebel-facilities.js';
+import {THEATER as MAP_THEATER,GRID as MAP_GRID,CITIES as MAP_CITIES,mountainCells,elevationAt,passAt,terrainAt,movementCost,terrainSight,coverMultiplier,ROAD_LINES as MAP_ROADS,RIVER_POINTS as MAP_RIVER,terrainDescription,CITY_LAYOUT,AIRPORT_CELLS,RANGES,PASSES} from './rebel-terrain.js';
 export const THEATER = MAP_THEATER;
 export const GRID = MAP_GRID;
 export const OBJECTIVE = {...MAP_CITIES.find(c=>c.id==='miraf')};

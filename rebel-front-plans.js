@@ -1,4 +1,4 @@
-import {distance,elevationAt} from '/rebel-terrain.js';
+import {distance,elevationAt} from './rebel-terrain.js';
 const sector=u=>Math.floor(u.y/12);
 const power=u=>(u.strength??1)*(u.modelId?1.8:1)*(.5+(u.morale??70)/200)*(1-(u.fatigue??0)/200)*(u.maxAmmo&&u.ammo<=0?.35:1);
 // Only contacts supplied by the observing side are available to planning.

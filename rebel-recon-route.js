@@ -1,4 +1,4 @@
-import {supportRoute} from '/rebel-air-support.js';
+import {supportRoute} from './rebel-air-support.js';
 // A continuous three-orbit observation pass centred on the ordered location.
 export function makeReconRoute(from,target,cell=180,bounds={width:14550,height:7550}){
  if(![from.x,from.y,target.x,target.y,cell].every(Number.isFinite)||cell<=0)throw Error('إحداثيات استطلاع غير صالحة');

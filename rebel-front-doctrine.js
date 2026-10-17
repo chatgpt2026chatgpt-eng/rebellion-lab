@@ -1,5 +1,5 @@
-import {policy} from '/rebel-command-policy.js';
-import {distance} from '/rebel-terrain.js';
+import {policy} from './rebel-command-policy.js';
+import {distance} from './rebel-terrain.js';
 // Persistent local sectors prevent a single attractive objective from emptying every front.
 export function frontOrder(b,u,contacts){
  b.frontDoctrine??={assignments:{},captures:{}};

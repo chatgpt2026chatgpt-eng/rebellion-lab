@@ -1,7 +1,7 @@
-import {POLICY_FIELDS,policy,setCommandPolicy} from '/rebel-command-policy.js';
-import {STAFF_ROLES,STAFF_SKILLS,staffState,assignStaff,staffEffect} from '/rebel-staff-command.js';
-import {LEADERS,changeLeader} from '/rebel-campaign.js';
-import {officerPortrait} from '/rebel-officer-art.js';
+import {POLICY_FIELDS,policy,setCommandPolicy} from './rebel-command-policy.js';
+import {STAFF_ROLES,STAFF_SKILLS,staffState,assignStaff,staffEffect} from './rebel-staff-command.js';
+import {LEADERS,changeLeader} from './rebel-campaign.js';
+import {officerPortrait} from './rebel-officer-art.js';
 const element=(tag,text)=>{const e=document.createElement(tag);if(text!=null)e.textContent=text;return e;};
 export function mountCommandView(dialog,getBattle){
  const section=element('section');section.className='strategy-section';section.id='commandDoctrine';section.append(element('h3','قيادة الجبهة · توجيهات قوات الدولة'),element('p','تطبق هذه التوجيهات على قواتك في القتال الآلي. للمتمردين قيادة مستقلة. «تقدير القيادة» يترك القرار للنظام.'));

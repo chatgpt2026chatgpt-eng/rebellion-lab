@@ -1,6 +1,6 @@
-import {policy} from '/rebel-command-policy.js';
-import {movementCost,GRID} from '/rebel-terrain.js';
-import {isUnitDetected} from '/rebel-artillery-sim.js';
+import {policy} from './rebel-command-policy.js';
+import {movementCost,GRID} from './rebel-terrain.js';
+import {isUnitDetected} from './rebel-artillery-sim.js';
 // REBEL_POLITICAL_READY_V27 — campaign-ready strategic layer for the rebel lab.
 const sideName = side => side === 'blue' ? 'الدولة' : 'المتمردون';
 const dist = (a,b) => {
