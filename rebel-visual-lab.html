@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101719">
+  <title>مختبر التمرد · حرب الجولات</title>
+  <link rel="stylesheet" href="/rebel-visual-lab.css">
+<link id="war-ui-system-styles" rel="stylesheet" href="/war-ui-system.css">
+<link rel="stylesheet" href="/battle-unit-identity.css">
+<link rel="stylesheet" href="/rebel-campaign.css">
+<link rel="stylesheet" href="/rebel-command-layout.css">
+<link rel="stylesheet" href="/rebel-intelligence.css">
+</head>
+<body class="rebel-lab ground-upgrade">
+  <main class="lab">
+    <header class="topbar">
+      <div class="brand"><span class="eyebrow">ميدان أوران · حرب الجولات · UPDATE ID: REBEL-AIRCRAFT-35</span><h1>مختبر التمرد</h1></div>
+      <div class="turn-status"><span>الجولة <b id="turnNumber">1</b> · الشهر <b id="monthNumber">1</b></span><span id="phaseLabel">دورك · أصدر الأوامر</span></div>
+      <div class="top-actions"><button id="openSupply" type="button">مركز الإمداد</button><button id="openGuide" type="button">دليل الرموز</button><button id="resetBattle" type="button">إعادة</button></div>
+    </header>
+
+    <section class="map-shell"><div class="rebellion-brief" role="note"><strong>خريطة موسعة · جبهات التمرد</strong><span>الدولة أزرق · المتمردون رمادي</span><span>سلاسل وممرات · المتمردون يسيطرون على قرابة ثلثي الأرض.</span><span>تثبيت السيطرة: جولتان دون خصم داخل المدينة.</span></div>
+      <div class="map-head">
+        <div class="force-line"><span class="side blue-side"><i></i> قواتك <b id="blueForce">18 وحدة · 6 مدرعات · 72 مشاة</b></span><span class="side red-side"><i></i> المتمردون <b id="redForce">16 وحدة · 6 مدرعات · 60 مشاة</b></span><span class="objective-status" id="objectiveStatus">احتلال المدن: 3 / 8</span></div>
+        <div class="map-tools"><button id="zoomOut" type="button" aria-label="تصغير الخريطة">−</button><button id="zoomFull" type="button">الخريطة كاملة</button><button id="zoomIn" type="button" aria-label="تكبير الخريطة">＋</button></div>
+      </div>
+      <div class="map-frame" id="mapFrame">
+        <svg id="soldierMap" viewBox="0 0 14550 7550" role="img" aria-label="مسرح أوران واسع، خلايا حركة وسيطرة للجولات">
+          <rect width="14550" height="7550" fill="#293b39"/>
+          <g id="territory"></g><g id="terrain"></g><g id="frontline"></g><g id="routes"></g><g id="sites"></g><g id="logistics"></g><g id="units"></g><g id="effects"></g>
+        </svg>
+        <div class="map-badge"><i></i> مسرح موحّد · قوات ومدن ومطارات وطيران ومسيرات</div>
+        <div class="map-hint" id="mapHint">الطيران والمسيرات تعمل فوق خريطة القوات والمدن نفسها</div>
+        <div class="legend"><span><i class="blue-dot"></i> سيطرة قواتك</span><span><i class="red-dot"></i> سيطرة المتمردون</span><span><i class="gold-dot"></i> حدود المدن</span><span><i class="ready-dot"></i> فصيل جاهز</span></div>
+      </div>
+    </section>
+
+    <section class="air-battle-command" id="airBattleCommand" aria-label="مركز قيادة الطيران" hidden>
+      <div class="air-battle-heading"><div><span class="air-battle-kicker">مركز القيادة المختار</span><b id="airBattleCommandTitle">قيادة الطيران</b><small>اختر نوع الطائرة ثم حدد الهدف المناسب على الخريطة</small></div><span id="airBattleTurnBadge">الجولة ١</span><button id="closeAirCommand" class="command-close" type="button" aria-label="إخفاء مركز القيادة">إخفاء</button></div>
+      <div class="air-battle-controls">
+        <label>قاعدة الإقلاع<select id="airBattleBase"></select></label>
+        <label>المنظومة الجوية<select id="airBattleCraft"><option value="f16">F-16 · مقاتلة متعددة المهام</option><option value="mig29">MiG-29 · مقاتلة اعتراضية</option><option value="su24">Su-24 · قاذفة تكتيكية</option><option value="ah64">AH-64 · مروحية قتالية</option><option value="uh60">UH-60 · مروحية إنزال</option><option value="stealth">قاذفة شبحية · قصف مساحة</option></select></label>
+        <label id="airBattlePatternLabel">اتجاه الحزام الناري<select id="airBattlePattern"><option value="point">ضربة مركزة</option><option value="horizontal" selected>حزام أفقي</option><option value="vertical">حزام عمودي</option></select></label>
+        <label id="airBattleFocusLabel" hidden>توزيع الإصابة<select id="airBattleFocus"><option value="auto">تلقائي حسب الهدف</option><option value="focused">تركيز على الهدف</option><option value="area">تغطية المنطقة</option></select></label>
+        <label id="airBattleBombCountLabel" hidden>القنابل لكل طائرة<select id="airBattleBombCount"><option value="5" selected>٥ قنابل</option><option value="4">٤ قنابل</option></select></label>
+        <label id="airBattleSpreadLabel" hidden>طول الحزام · <output id="airBattleSpreadValue">520</output><input id="airBattleSpread" type="range" min="280" max="1040" step="40" value="520"></label>
+        <label id="airBattleWeaponLabel" hidden>السلاح / الذخيرة<select id="airBattleWeapon"></select></label>
+        <label id="airBattleApproachLabel" hidden>طريقة الاقتراب<select id="airBattleApproach"><option value="offset">مسار جانبي مراوغ</option><option value="low">دخول منخفض</option><option value="sead">مسار مضاد للرصد</option></select></label>
+        <label>عدد الطائرات<select id="airBattleCount"><option value="1">١</option><option value="2">٢</option><option value="3">٣</option><option value="4">٤</option></select></label>
+        <div class="air-battle-stock"><span>المخزون الجاهز</span><b id="airBattleStock">—</b></div>
+        <button id="airBattleTargetMode" type="button">تحديد الهدف على الخريطة</button>
+      </div>
+      <div class="air-battle-status" id="airBattleStatus" role="status" aria-live="polite">الضربات الجوية تطير على الخريطة نفسها؛ وحدات الدفاع الجوي تعترضها بصواريخ حقيقية من منظومة مختبر المسيرات.</div>
+      <div class="air-battle-stealth-plan" id="airBattleStealthPlan" hidden><span id="airBattleStealthPlanText">معاينة منطقة القصف</span><button id="airBattleStealthClear" type="button">مسح المعاينة</button></div>
+    <div class="air-battle-key"><span>المقاتلات</span><span>القاذفات</span><span>الشبح</span><span>المروحيات</span></div>
+    </section>
+    <section class="command-dock">
+      <div class="roster-head"><div><b>القوات والفرق والمركبات</b><small>فرق المشغلين تحمل ٣ مسيرات · مركبة الإطلاق تحمل ٧ · القواعد تملك مخزوناً متنوعاً</small></div><div class="roster-scroll" id="unitRoster" aria-label="اختيار فصيل"></div></div>
+      <section class="drone-command" id="droneCommand" aria-label="مركز قيادة المسيرات" hidden>
+        <div class="drone-command-copy"><b>قيادة المسيرات</b><small>اختر الحركة لنقل الوحدة، أو تخطيط الهجوم لإضافة أهدافها.</small></div>
+        <select id="droneSourceSelect" class="drone-source" aria-label="مصدر إطلاق المسيرة"><option value="">مصدر الإطلاق</option></select>
+        <select hidden id="droneType" class="drone-type" aria-label="نوع المسيرة"><option value="light">خفيفة · مدى ٤</option><option value="standard" selected>متوسطة · مدى ٧</option><option value="heavy">بعيدة · مدى ١٠</option></select>
+        <div hidden class="drone-stats"><span>المدى <b id="droneRangeValue">٧</b></span><span>الضرر <b id="droneDamageValue">٢٩</b></span><span>المخزون <b id="droneStockValue">—</b></span></div>
+        <button id="droneMoveMode" type="button">تحريك الوحدة</button><button hidden id="droneLaunchOrder" type="button" class="drone-launch">٣ · اختيار الهدف</button>
+      
+        <button id="openDronePlanner" type="button" class="drone-plan-open">تخطيط هجوم المسيرات · اختيار الأهداف</button>
+      </section>
+      <div class="command-row">
+        <article class="selected-card" id="selectedCard"><span class="selected-icon" id="selectedIcon">01</span><div><b id="selectedTitle">الفصيل 1</b><small id="selectedInfo">٦ أفراد · حركة ٤ خلايا</small></div><span id="selectedOrder" class="order-state">جاهز</span></article>
+        <div class="orders" role="group" aria-label="أوامر الفصيل المحدد">
+          <button id="holdOrder" type="button" class="order">ثبات ودفاع</button><button id="regroupOrder" type="button" class="order">إعادة تنظيم</button><button id="ambushOrder" type="button" class="order">كمين</button>
+          <button id="artilleryOrder" type="button" class="order">قصف مدفعي</button><button id="fortifyOrder" type="button" class="order">تحصين</button>
+          <button id="mineOrder" type="button" class="order">زرع لغم</button><button id="clearMineOrder" type="button" class="order">إزالة لغم</button>
+        </div>
+        <div class="battle-log" id="eventLog" aria-live="polite">جولة 1: لديك 9 فصائل مشاة وقناص مقابل 5 فصائل مشاة وقناص للعدو. أصدر الأوامر ثم أنهِ الجولة.</div>
+        <button id="endTurn" class="end-turn" type="button">إنهاء الجولة <span>←</span></button>
+      </div>
+    </section>
+    <footer>قوات ومدن مختبر الجنود · طيران ومروحيات مختبر الطيران · الشبح · والمسيرات الانتحارية في مسرح واحد</footer>
+  </main>
+  <dialog id="supplyPanel" dir="rtl"><div class="guide-head"><h2>مركز الإمداد</h2><button id="closeSupply" type="button">إغلاق</button></div><p class="guide-note">كل أربع جولات شهر. الذخيرة والوقود والإمداد تبقى كما في مختبر الجنود؛ وحدات الدرونات لها مخزون منفصل.</p><div id="supplyStatus" class="supply-status"></div><div class="supply-actions"><button id="toggleAutoSupply" type="button">الإمداد التلقائي: يعمل</button><button id="dispatchSupply" type="button">إرسال قافلة للوحدة المحددة</button></div><div id="convoyList" class="convoy-list"></div></dialog>
+  <dialog id="symbolGuide" dir="rtl"><div class="guide-head"><h2>هوية الوحدات</h2><button id="closeGuide" type="button">إغلاق</button></div><p class="guide-note">رموز مختبر مستقل مبني على خريطة وقواعد مختبر الجنود. قيم مدى المسيرات وضررها مجرد موازنة لعب. الفريق يختفي بعد إطلاق مسيراته الثلاث، أما المركبة فتظل حتى تدميرها أو خسارتها.</p><div id="symbolCards" class="symbol-cards"></div></dialog>
+
+  <dialog id="dronePlanner" class="drone-planner" dir="rtl" aria-labelledby="dronePlannerTitle">
+    <header class="planner-head"><div><span class="planner-kicker">تخطيط قبل التنفيذ</span><h2 id="dronePlannerTitle">قيادة هجوم الدرونات</h2><p>للشاحنة أربع مسيرات بالجولة: أضف عدة أوامر لنفس الشاحنة لتوزيعها، أو حدد أربعاً لهدف واحد.</p></div><button type="button" id="closeDronePlanner" class="planner-close">إغلاق</button></header>
+    <div class="planner-grid">
+      <label>مصدر الإطلاق<select id="planSource"></select></label>
+      <label>الهدف المعادي<select id="planTarget"></select></label>
+      <label>نوع المسيرة<select id="planType"><option value="light">خفيفة</option><option value="standard" selected>متوسطة</option><option value="heavy">بعيدة</option></select></label>
+      <label>مسيرات في الرشقة<input id="planCount" type="number" min="1" max="16" value="1" inputmode="numeric"></label>
+      <label>عدد الرشقات<input id="planSalvos" type="number" min="1" max="4" value="1" inputmode="numeric"></label>
+      <label>الفاصل بين الرشقات<select id="planInterval"><option value="350">قصير · 0.35 ث</option><option value="700" selected>متوسط · 0.7 ث</option><option value="1200">هادئ · 1.2 ث</option></select></label>
+      <div class="planner-range" id="planRangeInfo">اختر مصدراً وهدفاً لعرض المدى والمخزون.</div>
+      <button type="button" id="addDroneOrder" class="planner-add">＋ إضافة الأمر للخطة</button>
+    </div>
+    <div class="planner-orders-head"><b>أوامر الهجوم</b><span id="dronePlanCount">٠ أوامر</span></div>
+    <div id="dronePlanOrders" class="planner-orders"><div class="planner-empty">اختر مصدراً وهدفاً ثم أضف أول أمر.</div></div>
+    <div class="planner-footer"><div id="dronePlanSummary" class="planner-summary">الخطة فارغة.</div><div id="dronePlanValidation" class="planner-validation" role="status" aria-live="polite"></div><button id="executeDronePlan" type="button" class="planner-fire" disabled>تنفيذ الهجوم الموحّد</button></div>
+  </dialog>
+  <script type="module" src="/rebel-visual-lab.js"></script>
+  <script type="module" src="/rebel-ops.js"></script>
+<!-- ORANE_DRONE_COMMAND_CENTER_2026_10 -->
+<script type="module" src="/rebel-command-layout.js"></script>
+</body>
+</html>

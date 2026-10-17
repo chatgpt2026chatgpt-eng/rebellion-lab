@@ -1,0 +1,50 @@
+/* Scoped to this lab; each mode gets one bottom command surface. */
+body.rebel-lab .lab{height:100dvh;min-height:0;display:flex;flex-direction:column;overflow:hidden;padding:6px;gap:5px}
+body.rebel-lab .topbar{flex:0 0 auto;min-height:44px;padding:5px 9px}
+body.rebel-lab .map-shell{flex:1;min-height:0;display:flex;flex-direction:column;margin-bottom:0;padding-bottom:var(--command-reserve,180px)}
+body.rebel-lab .map-frame{flex:1;min-height:0;height:auto}
+body.rebel-lab footer,body.rebel-lab .air-battle-key,body.rebel-lab .air-battle-kicker,body.rebel-lab .air-battle-heading small,body.rebel-lab .roster-head small,body.rebel-lab .map-badge{display:none!important}
+.lab-navigation{position:relative}.lab-navigation summary,.front-details summary{cursor:pointer;font-size:11px;color:#dac68f;padding:5px}
+.lab-navigation[open] .top-actions{position:absolute;z-index:11000;top:100%;left:0;min-width:220px;padding:12px;background:#172a32;display:flex;flex-wrap:wrap;border:1px solid #627b7b;border-radius:8px}
+.front-details .rebellion-brief{font-size:11px;padding:6px}.front-details{flex:0 0 auto}.map-head{min-height:0!important;padding:4px!important}.map-tools{max-width:none!important}.force-line{max-width:none!important}
+body[data-command-surface=air] .command-dock,body[data-command-surface=air] .facility-choice,body[data-command-surface=air] #mapDroneTray,
+body[data-command-surface=campaign] .command-dock,body[data-command-surface=campaign] #airBattleCommand,
+body[data-command-surface=drones] .command-dock,body[data-command-surface=drones] #airBattleCommand,
+body[data-command-surface=facility] .command-dock{display:none!important}
+body.rebel-lab .lab>#airBattleCommand:not([hidden]){bottom:6px!important;max-height:30dvh!important;padding:8px!important}
+body.rebel-lab #airSupportPanel{padding:6px;margin-top:5px;gap:5px;font-size:12px;line-height:1.4}
+body.rebel-lab #airSupportFeedback{display:none}body.rebel-lab:has(#airBattleCraft option[value=ah1z]:checked) #airSupportFeedback{display:block}
+body.rebel-lab .lab>#airBattleCommand .air-battle-controls{grid-template-columns:repeat(5,minmax(100px,1fr));gap:5px!important}
+body.rebel-lab #airBattleStatus{margin-top:4px!important;padding:4px!important}
+body.rebel-lab .command-dock{max-height:24dvh!important;padding:6px!important}
+body.rebel-lab .roster-head[hidden]{display:none!important}
+#toggleUnitRoster{padding:4px 12px;min-height:28px;justify-self:start;background:#24434b;color:#e4e9de;border:1px solid #607b7b;border-radius:6px}
+body.rebel-lab .battle-log{display:none}body.rebel-lab .faction-key{font-size:10px;padding:3px}
+body.rebel-lab #campaignPanel,body.rebel-lab #mapDroneTray{max-height:30dvh;bottom:6px}
+body.rebel-lab .facility-choice{max-height:24dvh;overflow:auto;bottom:6px}
+body[data-command-surface=air],body[data-command-surface=drones],body[data-command-surface=campaign]{--command-reserve:30dvh}
+@media(max-width:700px){
+ body.rebel-lab .eyebrow,body.rebel-lab .force-line .side,body.rebel-lab .faction-key,body.rebel-lab .legend{display:none!important}
+ body.rebel-lab .brand h1{font-size:14px}body.rebel-lab .topbar{flex-wrap:nowrap;gap:4px}.top-actions a:first-child{display:inline!important}
+ body.rebel-lab .map-tools button{font-size:10px;min-height:30px;padding:4px}.map-head{flex-wrap:wrap;gap:3px}
+ body.rebel-lab .lab>#airBattleCommand:not([hidden]){bottom:4px!important;max-height:32dvh!important}
+ body.rebel-lab .lab>#airBattleCommand .air-battle-controls{grid-template-columns:repeat(2,minmax(0,1fr));}
+ body.rebel-lab .lab>#airBattleCommand .air-battle-heading b{font-size:12px}
+ body.rebel-lab .air-battle-stock,body.rebel-lab #airBattleTurnBadge{display:none}
+ body.rebel-lab .selected-card small{max-height:30px;overflow:auto}
+ body[data-command-surface=air],body[data-command-surface=drones],body[data-command-surface=campaign]{--command-reserve:32dvh}
+}
+
+.air-command-primary{display:flex;gap:6px;align-items:center;flex-wrap:wrap;position:sticky;top:0;z-index:3;background:#17272d;padding:5px 0}.air-command-primary button{padding:6px 10px;background:#27464e;border:1px solid #698b8c;border-radius:7px;color:#e9ead7}.air-command-primary #airBattleTargetMode{background:#b79a51;color:#111f25;font-weight:bold}body[data-command-surface=air] #mapHint{display:none!important}
+
+#patrolExecutionInfo{flex-basis:100%;margin:2px 0;font-size:12px;line-height:1.5;color:#a7e5cb}#patrolExecutionInfo[data-state=warn]{color:#ffd18c}.air-command-primary [hidden]{display:none!important}
+
+.officer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:10px}.officer-card,.officer-current{background:#132b37;border:1px solid #526d73;border-radius:10px;padding:10px;overflow:hidden}.officer-card svg,.officer-current svg{width:72px;height:84px;float:right;margin-left:12px;border-radius:7px}.officer-card p{font-size:12px;line-height:1.6}.officer-card button{width:100%;clear:both}.officer-current{margin:8px 0}
+
+.map-extras{position:relative;flex-shrink:0}.map-extras>summary{cursor:pointer;font-size:12px;padding:7px;color:#e4d4a2}.map-extras-body{position:absolute;z-index:11000;top:100%;left:0;width:min(460px,85vw);padding:12px;background:#172a32;border:1px solid #627b7b;border-radius:8px;box-shadow:0 8px 24px #0008}.map-extras-body .force-line{display:flex;flex-direction:column;font-size:12px;gap:8px}.map-extras-body button{margin:4px}.map-extras-body .side{display:block!important}body.rebel-lab .map-head{display:flex;justify-content:space-between;flex-wrap:nowrap}.map-extras-body .front-details{margin-top:6px}@media(max-width:700px){body.rebel-lab .map-tools{display:flex;flex-wrap:wrap;gap:3px}.map-extras>summary{font-size:10px;padding:5px}.map-extras-body{position:fixed;top:110px;left:10px;right:10px;width:auto;max-height:55dvh;overflow:auto}}
+
+/* Primary diplomacy stays visible even when navigation is collapsed. */
+body.rebel-lab .topbar>.strategic-dock{flex:0 0 auto;gap:4px}
+body.rebel-lab .topbar>.strategic-dock #strategicStatus{display:none}
+body.rebel-lab .topbar>.strategic-dock button{font-size:12px;padding:6px 9px}
+@media(max-width:700px){body.rebel-lab .topbar{flex-wrap:wrap}.topbar>.strategic-dock{order:3}.topbar>.strategic-dock button{font-size:11px!important;padding:4px 7px!important}}

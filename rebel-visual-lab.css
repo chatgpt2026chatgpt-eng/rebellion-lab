@@ -1,0 +1,586 @@
+:root{font-family:"Noto Sans Arabic",Tahoma,Arial,sans-serif;color:#edf3ee;background:#0d1518;font-synthesis:none;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#0d1518}
+button,a{font:inherit}
+button{cursor:pointer}
+.lab{max-width:1900px;width:100%;height:100dvh;min-height:660px;margin:0 auto;padding:8px;display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:8px}
+.topbar,.map-shell,.command-dock{background:#172126;border:1px solid #344950;border-radius:11px}
+.topbar{min-height:54px;padding:7px 12px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px}.eyebrow{color:#99b3ac;font-size:9px}.brand h1{font-size:17px;margin:0;color:#f2dda4;white-space:nowrap}
+.turn-status{display:flex;align-items:center;gap:14px;color:#aabbb6;font-size:11px}.turn-status span:first-child{padding:6px 9px;border-radius:7px;background:#202f33}.turn-status b{color:#f0d278;font-size:15px}.turn-status #phaseLabel{color:#77d2b0;font-weight:800}
+.top-actions{display:flex;gap:5px;align-items:center}.top-actions a,.top-actions button,.map-tools button{display:inline-flex;align-items:center;justify-content:center;padding:7px 9px;border:1px solid #50656b;border-radius:7px;background:#223239;color:#eaf1ed;text-decoration:none;font-weight:800;font-size:9px;white-space:nowrap}.top-actions button{background:#ad9050;border-color:#e2c779;color:#161d1e}
+.map-shell{min-height:0;padding:7px;display:flex;flex-direction:column;overflow:hidden}.map-head{min-height:34px;padding:0 2px 6px;display:flex;align-items:center;justify-content:space-between;gap:8px}.force-line{display:flex;align-items:center;gap:13px;flex-wrap:wrap}.side{display:flex;align-items:center;gap:5px;color:#aab9b3;font-size:9px}.side b{color:#e7ece8;font-size:10px}.side i,.legend i{width:9px;height:9px;display:inline-block;border-radius:50%}.blue-side i,.blue-dot{background:#55bdd7}.red-side i,.red-dot{background:#cf655c}.objective-status{color:#f0d27d;font-size:9px;font-weight:800}
+.map-tools{display:flex;gap:4px}.map-tools button{min-width:32px;padding:5px 7px}.map-frame{position:relative;overflow:hidden;min-height:0;flex:1;border:1px solid #40565b;border-radius:8px;background:#293b39;touch-action:none;box-shadow:inset 0 0 50px #07101299}#soldierMap{display:block;width:100%;height:100%;user-select:none;touch-action:none;cursor:grab}#soldierMap.dragging{cursor:grabbing}
+
+#terrain,#frontline{pointer-events:none}
+.territory{fill:#365f62;stroke:#365f62;stroke-width:1.5;cursor:pointer}.territory.red-territory{fill:#704c49;stroke:#704c49}.territory.sniper-range{fill:#aa925f;fill-opacity:.18;stroke:#e5cf93;stroke-width:1.2;stroke-opacity:.48;vector-effect:non-scaling-stroke}.territory.reachable{fill:#4d7974;stroke:#b8d7c3;stroke-width:2;vector-effect:non-scaling-stroke}.territory.selected-cell{stroke:#f0d17d;stroke-width:2;vector-effect:non-scaling-stroke}.territory.attack-range{fill:#99614d;stroke:#ffe0a2;stroke-width:2;vector-effect:non-scaling-stroke}
+.river{fill:none;stroke:#3d8daa;stroke-width:34}.road{fill:none;stroke:#a99b7e;stroke-width:11;opacity:.4}.region-label{font:800 70px Tahoma;fill:#c9d5c6;letter-spacing:6px;opacity:.25}.frontline-path{fill:none;stroke:#e3c46b;stroke-width:2;stroke-dasharray:7 6;vector-effect:non-scaling-stroke;opacity:.8}
+.squad-unit{cursor:pointer;color:#73d2e6}.squad-unit.red{color:#e68a73}.unit-frame{fill:#6d8285;stroke:currentColor;stroke-width:6}.squad-unit.selected .unit-frame{stroke:#fff0aa;stroke-width:8;fill:#99aaa0}.squad-unit.attack-target .unit-frame{stroke:#ffe098;stroke-width:9;filter:drop-shadow(0 0 10px #ffcf7188)}.unit-silhouette,.site-silhouette{fill:#05090b;stroke:#c0cbc7;stroke-width:1.4;stroke-linejoin:round}.unit-caption{fill:#101d23;stroke:currentColor;stroke-width:2}.squad-number{fill:#eaf4ee;font:700 23px Tahoma}.squad-unit:focus{outline:none}.squad-unit:focus .unit-frame{stroke:#fff1b4}
+.site-frame{fill:#6f807d;stroke:#73d2e6;stroke-width:5}.red-owned .site-frame{stroke:#e68a73}.site-marker{cursor:help}.site-marker.contested .site-frame{stroke:#ffe6a3;stroke-dasharray:9 6}.site-name{font:800 39px Tahoma;fill:#eaf1e9;paint-order:stroke;stroke:#102027;stroke-width:9}.site-type{font:700 29px Tahoma;fill:#c3ccc0;paint-order:stroke;stroke:#102027;stroke-width:7}.command-flag{fill:#e3c46b;stroke:#e3c46b;stroke-width:5}.planned-path{fill:none;stroke:#ffe098;stroke-width:10;stroke-dasharray:18 12;pointer-events:none}.attack-line{stroke:#eeaa7d;stroke-width:12;stroke-dasharray:18 12;pointer-events:none}
+.map-badge,.map-hint,.legend{position:absolute;padding:6px 9px;background:#10191ddd;border:1px solid #496067;border-radius:7px;font-size:9px;pointer-events:none;box-shadow:0 4px 16px #0005}.map-badge{top:8px;right:8px;color:#dce7e0}.map-badge i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-left:5px;background:#f0d27d}.map-hint{bottom:8px;right:8px;color:#d5dfd8}.legend{bottom:8px;left:8px;display:flex;gap:9px;color:#e3e9e2}.legend i{vertical-align:middle;margin-left:3px}.legend .gold-dot{background:#f0d27d}
+.command-dock{padding:7px 9px;display:grid;grid-template-rows:auto auto auto;gap:7px}.roster-head{min-height:38px;display:flex;align-items:center;gap:12px}.roster-head>div:first-child{min-width:135px}.roster-head b{display:block;color:#f0dda5;font-size:11px}.roster-head small{display:block;margin-top:2px;color:#9dafaa;font-size:8px}.roster-scroll{display:flex;gap:5px;min-width:0;overflow-x:auto;padding:1px 1px 3px;scrollbar-width:thin}.roster-unit{width:42px;height:34px;flex:0 0 42px;border:1px solid #4c6268;border-radius:6px;background:#202f34;color:#dbe8e4;font-size:9px;font-weight:900}.roster-unit.blue-unit{border-bottom:3px solid #55bdd7}.roster-unit.selected{background:#345148;border-color:#f0d27d;color:#fff2c4}.roster-unit.eliminated{opacity:.35;text-decoration:line-through}.roster-unit.acted{opacity:.52;border-color:#6a8b78}.squad-unit.hit-flash .unit-frame{stroke:#fff3ba;filter:drop-shadow(0 0 16px #fff0a6);fill:#c6b78a}.squad-unit.acting-enemy .unit-frame{stroke:#ffe098;stroke-width:10;filter:drop-shadow(0 0 14px #ffcf7188)}.command-row{display:grid;grid-template-columns:minmax(190px,.9fr) minmax(120px,auto) minmax(220px,1fr) auto;align-items:center;gap:8px}.selected-card{min-width:0;display:flex;align-items:center;gap:8px;padding:7px;border:1px solid #42585d;border-radius:7px;background:#111b1f}.selected-icon{width:33px;height:33px;flex:0 0 33px;display:grid;place-items:center;border-radius:50%;background:#27515c;color:#d7f7ff;font-size:10px;font-weight:900}.selected-card>div{min-width:0;flex:1}.selected-card b{display:block;font-size:10px;color:#f2e3b5}.selected-card small{display:block;margin-top:3px;color:#a7b9b5;font-size:8px;white-space:nowrap}.order-state{color:#b8c8bf;font-size:8px}.orders{display:flex;gap:5px}.order,.end-turn{min-height:34px;padding:7px 9px;border:1px solid #50636a;border-radius:7px;background:#223239;color:#e9f0eb;font-size:9px;font-weight:900;white-space:nowrap}.order.active{background:#29554c;border-color:#83cfb3;color:#e8fff4}.battle-log{min-height:34px;max-height:42px;overflow:hidden;padding:5px 8px;border-right:3px solid #d5b962;border-radius:5px;background:#111a1e;color:#d5e2dc;font-size:8px;line-height:1.5}.end-turn{height:38px;min-width:112px;border-color:#e3ca80;background:#c5a655;color:#141d1d;font-size:10px}.end-turn span{font-size:15px;margin-right:5px}.end-turn:disabled{opacity:.5;cursor:not-allowed}.command-dock.resolving .end-turn{filter:brightness(.75)}
+footer{text-align:center;color:#819494;font-size:8px;padding:0 2px}
+@media(max-width:1050px){.top-actions a{padding:6px 7px}.command-row{grid-template-columns:minmax(180px,.9fr) auto minmax(200px,1fr)}.orders{grid-column:1/3;grid-row:2}.battle-log{grid-column:3;grid-row:1/3}.end-turn{grid-column:2;grid-row:1}}
+@media(max-width:700px){.lab{height:auto;min-height:100dvh;min-height:100svh;padding:5px;grid-template-rows:auto minmax(50dvh,56dvh) auto auto;gap:6px}.topbar{padding:6px;gap:5px;flex-wrap:wrap}.brand{gap:5px}.brand h1{font-size:14px}.eyebrow{font-size:7px}.turn-status{gap:5px;font-size:8px}.turn-status span:first-child{padding:4px 6px}.turn-status b{font-size:11px}.top-actions{gap:3px}.top-actions a,.top-actions button{font-size:7px;padding:5px}.top-actions a:first-child{display:none}.map-shell{padding:5px}.map-head{align-items:flex-start;min-height:48px}.force-line{gap:4px 8px;max-width:calc(100% - 115px)}.side{font-size:7px;gap:3px}.side b{font-size:7px}.side i{width:7px;height:7px}.objective-status{font-size:7px}.map-tools button{font-size:7px;min-width:24px;padding:4px}.map-badge{font-size:7px;top:5px;right:5px;padding:5px 6px}.map-hint{font-size:7px;bottom:5px;right:5px;padding:5px 6px}.legend{font-size:6px;left:5px;bottom:5px;gap:5px;padding:5px 6px}.legend i{width:6px;height:6px}.command-dock{padding:6px;gap:5px}.roster-head{align-items:flex-start;gap:5px;flex-direction:column}.roster-head>div:first-child{display:flex;align-items:center;gap:6px}.roster-head b{font-size:9px}.roster-head small{font-size:7px;margin:0}.roster-scroll{width:100%;gap:4px}.roster-unit{height:29px;width:35px;flex-basis:35px;font-size:8px}.command-row{grid-template-columns:minmax(0,1fr) auto;gap:5px}.selected-card{padding:5px;min-height:38px}.selected-icon{width:27px;height:27px;flex-basis:27px;font-size:8px}.selected-card b{font-size:8px}.selected-card small,.order-state{font-size:7px}.orders{grid-column:1/-1;grid-row:2;justify-content:stretch}.order{flex:1;min-height:30px;font-size:8px;padding:5px 4px}.battle-log{grid-column:1/-1;grid-row:3;min-height:29px;max-height:35px;font-size:7px}.end-turn{grid-column:2;grid-row:1;min-width:92px;min-height:35px;font-size:8px}footer{font-size:7px}}
+
+
+.lab,.topbar,.map-shell,.command-dock,.command-row,.roster-head,.roster-scroll{min-width:0}.roster-head{overflow:hidden}.roster-scroll{max-width:100%}.selected-card small{white-space:normal}.map-frame{background:#293b39}.map-badge{display:block;font-size:10px;color:#f0d27d}.map-hint{font-size:11px;max-width:88%}.legend{bottom:43px;font-size:10px}.side,.side b,.objective-status{font-size:11px}.top-actions a,.top-actions button,.map-tools button{font-size:11px}.map-tools{flex-wrap:wrap}.roster-unit{font-size:12px}.selected-card b,.order,.end-turn{font-size:12px}.selected-card small,.battle-log{font-size:10px}.selected-icon{border-radius:6px;background:#8da2a2}.selected-icon svg{width:100%;height:100%}
+#symbolGuide{color:#eaf0ed;background:#18282e;border:1px solid #70898d;border-radius:12px;max-width:750px;width:90vw;padding:22px}#symbolGuide::backdrop{background:#071116c9}.guide-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.guide-head h2{margin:0;font-size:20px}.guide-head button{background:#29414a;color:#fff;border:1px solid #779196;border-radius:6px;padding:8px 13px}.guide-note{color:#b5c5c5;font-size:13px;line-height:1.8}.symbol-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.symbol-card{display:flex;flex-direction:column;gap:10px;align-items:center;padding:14px 8px;background:#223840;border:1px solid #465f64;border-radius:9px;text-align:center}.symbol-card svg{background:#829695;border:2px solid #74c8df;border-radius:50%;width:96px;height:96px}.symbol-card b{font-size:14px}.symbol-card small{font-size:10px;line-height:1.6;color:#b4c5c7}
+@media(max-width:700px){.lab{overflow:hidden;grid-template-rows:auto minmax(54dvh,58dvh) auto auto}.map-head{min-height:74px}.map-tools{max-width:41%;justify-content:end}.force-line{max-width:58%;gap:5px}.map-tools button{font-size:10px;min-height:29px}.side,.side b,.objective-status{font-size:9px}.top-actions a,.top-actions button{font-size:9px}.topbar{overflow:hidden}.map-hint{font-size:9px;line-height:1.6}.legend{font-size:8px;bottom:54px}.command-row{display:flex;flex-wrap:wrap}.selected-card{flex:1;min-width:170px}.selected-card .order-state{display:none}.end-turn{flex:0 0 96px;min-width:96px}.orders,.battle-log{width:100%}.roster-scroll{max-width:calc(100vw - 30px)}.selected-card small{font-size:9px}.selected-card b,.order,.end-turn{font-size:11px}.battle-log{font-size:9px;max-height:48px}.symbol-cards{grid-template-columns:repeat(2,1fr)}.guide-head h2{font-size:17px}}
+
+.urban-ground{fill:#658181;fill-opacity:.48;stroke:none;pointer-events:none}.urban-ground[data-owner="red"]{fill:#875d56;fill-opacity:.47}.urban-street{fill:none;stroke:#293a3a;stroke-width:14;stroke-linecap:round;stroke-opacity:.48;pointer-events:none}.urban-boundary{fill:none;stroke:#d6c27f;stroke-width:4;stroke-linejoin:round;stroke-opacity:.72;pointer-events:none}.red-owned .urban-boundary{stroke:#e7b08b}.contested .urban-boundary{stroke:#f0d17d;stroke-dasharray:14 11}.city-building{opacity:.94}.city-window{pointer-events:none}.urban-hit{fill:transparent;stroke:none;cursor:pointer}.city-name-plaque{fill:#101d23;fill-opacity:.9;stroke:#73d2e6;stroke-width:3}.red-owned .city-name-plaque{stroke:#e68a73}.site-name{font-size:37px}.site-type{font:700 24px Tahoma;fill:#d5dfd8;paint-order:stroke;stroke:#152126;stroke-width:7px}.urban-village .site-type{fill:#bfd0c6}.urban-metro .site-type{fill:#f0d17d}.command-flag{fill:#e3c46b;stroke:#e3c46b;stroke-width:5}
+/* City core elements share the existing quiet isometric building language. */
+.city-plaza{fill:#c3ae7b;fill-opacity:.28;stroke:#d9c795;stroke-width:3;stroke-opacity:.43;pointer-events:none}
+.city-core-shadow{fill:#10191b;fill-opacity:.48;stroke:none;pointer-events:none}
+.city-core-front{fill:#a9aaa0;stroke:#354648;stroke-width:3}
+.city-core-side{fill:#667875;stroke:#354648;stroke-width:3}
+.city-core-roof{fill:#788982;stroke:#3b4c4b;stroke-width:3;stroke-linejoin:round}
+.city-core-eave{stroke:#d4c59d;stroke-width:3;stroke-opacity:.78}
+.city-core-column{stroke:#ded5ba;stroke-width:5;stroke-linecap:round}
+.city-core-door{fill:#435655;stroke:#374849;stroke-width:2}
+.city-core-dome{fill:#9ba99b;stroke:#465a56;stroke-width:3}
+.city-core-spire{stroke:#e1d2a8;stroke-width:3}
+.market-front{fill:#9c9582;stroke:#3c4d4b;stroke-width:3}
+.market-roof{fill:#9a6c54;stroke:#4b4a42;stroke-width:3;stroke-linejoin:round}
+.market-opening{fill:#465756;stroke:#d8c7a1;stroke-width:2}
+.market-awning{stroke:#d5c39b;stroke-width:4;stroke-opacity:.8}
+
+
+.mountain-terrain-tile{fill:#847b5c;fill-opacity:.28;stroke:#c0ac78;stroke-width:2;stroke-opacity:.18}
+.mountain-foot,.mountain-shadow{fill:#111b1a;fill-opacity:.62;stroke:none}
+.mountain-face-left{fill:#35483d;stroke:#1d2b27;stroke-width:4;stroke-linejoin:round}
+.mountain-face-right{fill:#6b6b4f;stroke:#26352e;stroke-width:4;stroke-linejoin:round}
+.mountain-ridge{fill:#a99b6d;fill-opacity:.72;stroke:#5b634d;stroke-width:2;stroke-linejoin:round}
+.mountain-strata{fill:none;stroke:#8b8967;stroke-width:3;stroke-opacity:.55;stroke-linecap:round}
+.mountain-pine{fill:#26392f;stroke:#1d2c27;stroke-width:2;stroke-linejoin:round}
+.apartment-shadow,.factory-shadow{fill:#11191a;fill-opacity:.5;stroke:none}
+.apartment-front{fill:#92978c;stroke:#354648;stroke-width:3;stroke-linejoin:round}
+.apartment-side{fill:#596b67;stroke:#354648;stroke-width:3;stroke-linejoin:round}
+.apartment-roof{fill:#707d73;stroke:#354648;stroke-width:3;stroke-linejoin:round}
+.apartment-window{fill:#34484a;stroke:#b4b9a6;stroke-width:1.5}
+.apartment-window-lit{fill:#c5ae72;stroke:#4b5550;stroke-width:1.5}
+.apartment-entry{fill:#405351;stroke:#c0b99f;stroke-width:1.5}
+.apartment-cornice{fill:none;stroke:#c6bd9b;stroke-width:3;stroke-opacity:.7}
+.factory-front{fill:#817e6b;stroke:#344644;stroke-width:3;stroke-linejoin:round}
+.factory-side{fill:#566761;stroke:#344644;stroke-width:3;stroke-linejoin:round}
+.factory-window{fill:#394d4b;stroke:#c7bd9d;stroke-width:2}
+.factory-stack{fill:#565f58;stroke:#2e403d;stroke-width:3;stroke-linejoin:round}
+.factory-stack-cap{stroke:#d1c29b;stroke-width:3;stroke-linecap:round}
+
+/* Campaign update: unused-unit reminder, mountain snipers, and ambush state. */
+.unit-unmoved-marker{fill:#f8fbf6;stroke:#263a3b;stroke-width:4;filter:drop-shadow(0 0 7px #fff9);pointer-events:none}.unit-ambush-tag{fill:#f4df9e;font:900 20px Tahoma;paint-order:stroke;stroke:#172326;stroke-width:5px;pointer-events:none}.unit-mountain-marker{fill:#eed18a;stroke:#233435;stroke-width:3;pointer-events:none}.squad-unit.ambushed .unit-frame{stroke:#f2d68e;stroke-dasharray:11 6}.roster-unit{position:relative}.roster-unit.pending::after{content:'';position:absolute;top:2px;left:2px;width:8px;height:8px;border:1px solid #39494a;border-radius:50%;background:#f7faf3;box-shadow:0 0 5px #fff9}.order:disabled{opacity:.45;cursor:not-allowed}.ready-dot{background:#f8fbf6;border:1px solid #647273}
+
+/* Compact armor roster and firing-range cues. */
+.unit-nationality-tag{fill:#d9e3dd;stroke:#14242a;stroke-width:2}.unit-nationality-text{fill:#101a1d;font:900 9px Tahoma;pointer-events:none}.territory.armor-range{fill:#8fa477;fill-opacity:.20;stroke:#d4d69a;stroke-width:1.3;stroke-opacity:.62;vector-effect:non-scaling-stroke}.squad-unit.armored .unit-frame{stroke-width:6}.symbol-card small{max-width:30ch}#symbolGuide{max-height:min(88dvh,900px);overflow:auto}
+.squad-unit.blue.armored .unit-frame{stroke:#64dff2;stroke-width:8;filter:drop-shadow(0 0 7px #42cce877)}.squad-unit.blue.armored.selected .unit-frame{stroke:#fff0aa;stroke-width:10;filter:drop-shadow(0 0 13px #48dff2)}
+
+/* Quiet vehicle details and one-pass firing feedback; no particle emitters. */
+.armor-detail{fill:none;stroke:#718184;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.armor-detail-t90m{stroke:#929b8c}.armor-detail-type99a,.armor-detail-zbd04{stroke:#849397}.armor-detail-bradley,.armor-detail-bmp3{stroke:#7e8981}
+.armor-shot-tracer{fill:none;stroke:#ffe29a;stroke-width:5;stroke-linecap:round;stroke-dasharray:1;stroke-dashoffset:1;animation:armor-shot-dash 190ms ease-out forwards;filter:drop-shadow(0 0 3px #ffd46b)}
+.armor-muzzle-flash{fill:none;stroke:#fff1bd;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;opacity:0;animation:armor-muzzle 130ms ease-out forwards}
+.armor-impact-mark{fill:none;stroke:#fff1bd;stroke-width:5;stroke-linecap:round;opacity:0;animation:armor-impact 250ms 130ms ease-out forwards}
+.armor-impact-mark.deflected{stroke:#9ed7e4}.armor-impact-label{font:900 25px Tahoma;fill:#fff0bd;paint-order:stroke;stroke:#11191b;stroke-width:6px;opacity:0;animation:armor-label 380ms 150ms ease-out forwards;pointer-events:none}
+.armor-impact-label.deflected{fill:#bde9f0}.armor-shot-fx{pointer-events:none}
+.unit-health-track{fill:#11191c;stroke:#d5dfd8;stroke-width:1.4;pointer-events:none}.unit-health-fill{stroke:none;pointer-events:none}.unit-health-fill.healthy{fill:#83d6ad}.unit-health-fill.wounded{fill:#e5bd63}.unit-health-fill.critical{fill:#e07868}
+.unit-airlift-tag{fill:#d9f0a7;font:900 17px Tahoma;paint-order:stroke;stroke:#14251d;stroke-width:5px;pointer-events:none}
+@keyframes armor-shot-dash{to{stroke-dashoffset:0}}
+@keyframes armor-muzzle{15%{opacity:1}to{opacity:0}}
+@keyframes armor-impact{20%{opacity:1}to{opacity:0}}
+@keyframes armor-label{20%{opacity:1;transform:translateY(-5px)}to{opacity:0;transform:translateY(-18px)}}
+
+/* Monthly ammunition/fuel logistics. */
+#logistics{pointer-events:none}.supply-depot .depot-frame{fill:#162326dd;stroke:#e1cc83;stroke-width:5}.supply-depot.red .depot-frame{stroke:#d77a6d}.depot-symbol{fill:#d8cfad;stroke:#172124;stroke-width:2;stroke-linejoin:round}.depot-label,.depot-stock,.convoy-mark{font:900 24px Tahoma;fill:#f4e9bf;paint-order:stroke;stroke:#182328;stroke-width:7px}.depot-stock{font-size:18px;fill:#aee7cb}.supply-convoy .convoy-truck{fill:#b7d88a;stroke:#10191a;stroke-width:4;stroke-linejoin:round}.supply-convoy.red .convoy-truck{fill:#e68a73}.convoy-mark{font-size:17px;fill:#f4eed6}.unit-supply-warning{fill:#f0ad57;stroke:#3a2220;stroke-width:3}.unit-supply-warning-text{fill:#1b1b17;font:900 17px Tahoma;pointer-events:none}#supplyPanel,#symbolGuide{color:#eaf0ed;background:#18282e;border:1px solid #70898d;border-radius:12px;max-width:750px;width:min(92vw,750px);padding:22px}#supplyPanel::backdrop,#symbolGuide::backdrop{background:#071116c9}.supply-status{display:grid;gap:8px;margin:12px 0}.supply-status>div{display:grid;gap:5px;padding:10px;border:1px solid #405a60;border-radius:8px;background:#102026}.supply-status b{color:#f0d27d}.supply-status span,.convoy-list{color:#d0ded7;font-size:13px}.supply-actions{display:flex;flex-wrap:wrap;gap:8px}.supply-actions button,#closeSupply{border:1px solid #70898d;border-radius:7px;padding:9px 12px;background:#29414a;color:#f0f4ed;font-weight:800}.supply-actions button.active{background:#28554a;border-color:#83cfb3}.supply-actions button:disabled{opacity:.45}.convoy-list{margin-top:12px;padding:9px;background:#101a1e;border-radius:7px}
+.depot-label{font-size:38px}.depot-stock{font-size:24px}.convoy-mark{font-size:27px}
+
+/* Supply trucks use the same framed battlefield counter as combat units. */
+.squad-unit.supply-truck .unit-frame{stroke-width:7}.squad-unit.blue.supply-truck .unit-frame{stroke:#64dff2;fill:#718486}.squad-unit.red.supply-truck .unit-frame{stroke:#ed8a75;fill:#84736f}.squad-unit.supply-truck.selected .unit-frame{stroke:#fff0aa;stroke-width:10}.unit-silhouette{fill:#05090b}.unit-truck-tag{fill:#f0e2b9;font:900 17px Tahoma;paint-order:stroke;stroke:#172326;stroke-width:5px;pointer-events:none}
+
+/* Suicide drone controls and quiet, single-pass flight cue. */
+.drone-type{max-width:185px;background:#26383a;border:1px solid #9c9064;color:#f1e6c4;border-radius:7px;padding:6px 8px;font-size:10px;font-weight:800}
+.drone-launch{border-color:#d3ae68;background:#5b4930;color:#fff0c4}.drone-launch.active{background:#735329;border-color:#ffe09a;box-shadow:0 0 0 2px #e4c67155}
+.drone-command{display:flex;align-items:center;gap:8px;padding:7px 9px;border:1px solid #776640;border-radius:8px;background:linear-gradient(110deg,#252b26,#182326);min-width:0}.drone-command-copy{min-width:150px;flex:1}.drone-command-copy b{display:block;color:#f0d27d;font-size:11px}.drone-command-copy small{display:block;margin-top:3px;color:#b8c7bd;font-size:9px;line-height:1.35}.drone-command select{min-width:0;min-height:36px;padding:6px 8px;border:1px solid #647579;border-radius:7px;background:#1b292d;color:#edf3ee;font-size:10px;font-weight:800}.drone-command .drone-source{flex:1.15}.drone-command .drone-type{flex:.9;max-width:170px;border-color:#9c9064;color:#f1e6c4}.drone-stats{display:flex;gap:10px;white-space:nowrap;color:#aebdb6;font-size:9px}.drone-stats b{color:#f0d27d}.drone-command .drone-launch{min-height:36px;padding:7px 12px;border:1px solid #d3ae68;border-radius:7px;font-size:10px;font-weight:900;white-space:nowrap}.drone-command .drone-launch:disabled,.drone-command select:disabled{opacity:.48;cursor:not-allowed}
+.territory.drone-range{fill:#c6a765;fill-opacity:.18;stroke:#efcf85;stroke-width:1.8;stroke-dasharray:4 3;vector-effect:non-scaling-stroke}
+.territory.artillery-range{fill:#9a8055;fill-opacity:.16;stroke:#f1c978;stroke-width:1.5;stroke-dasharray:3 3;vector-effect:non-scaling-stroke}.territory.engineering-target{fill:#85965f;fill-opacity:.3;stroke:#c8dd8b;stroke-width:2;vector-effect:non-scaling-stroke}.field-fortification-mark{fill:none;stroke:#d0c18d;stroke-width:5;stroke-dasharray:9 6;opacity:.8;pointer-events:none}.field-mine-mark{fill:#d28d42;stroke:#38261d;stroke-width:4;opacity:.9;pointer-events:none}
+.recon-radar-coverage{fill:#72c7d0;fill-opacity:.035;stroke:#75d8db;stroke-width:5;stroke-dasharray:24 18;opacity:.62;pointer-events:none;vector-effect:non-scaling-stroke}
+.squad-unit.drone-operator .unit-frame,.squad-unit.drone-vehicle .unit-frame{stroke-width:8}.squad-unit.blue.drone-operator .unit-frame,.squad-unit.blue.drone-vehicle .unit-frame{stroke:#78d9eb}.squad-unit.red.drone-operator .unit-frame,.squad-unit.red.drone-vehicle .unit-frame{stroke:#e98e7b}
+.unit-drone-tag{fill:#ffe6a5;font:900 17px Tahoma;paint-order:stroke;stroke:#172326;stroke-width:5px;pointer-events:none}
+.drone-base{cursor:pointer;pointer-events:all}.drone-base-frame{fill:#111e22ee;stroke:#80d2de;stroke-width:8}.drone-base.red .drone-base-frame{stroke:#e58b78}.drone-base.selected .drone-base-frame{stroke:#ffe099;stroke-width:12}.drone-base-symbol{fill:#111;stroke:#dfd4ad;stroke-width:3;stroke-linejoin:round}.drone-base-label,.drone-base-stock{font:900 26px Tahoma;fill:#f0e7c5;paint-order:stroke;stroke:#142125;stroke-width:7px}.drone-base-stock{font-size:19px;fill:#cbe8ce}
+.drone-flight-fx{pointer-events:none}.drone-flight-path{fill:none;stroke:#f0d68c;stroke-width:5;stroke-dasharray:10 12;stroke-linecap:round;opacity:.75}.drone-flight-marker{fill:#101719;stroke:#f3dda0;stroke-width:4}.drone-impact-mark{fill:none;stroke:#f4d899;stroke-width:7;stroke-linecap:round;opacity:0;animation:drone-impact 260ms ease-out forwards}.drone-impact-label{font:900 23px Tahoma;fill:#fff0bd;paint-order:stroke;stroke:#121a1c;stroke-width:6px;opacity:0;animation:drone-impact-label 420ms ease-out forwards}@keyframes drone-impact{20%{opacity:.9}to{opacity:0}}@keyframes drone-impact-label{15%{opacity:1}to{opacity:0;transform:translateY(-14px)}}
+@media(max-width:700px){.drone-type{flex:1;max-width:none;min-height:30px;font-size:8px}.drone-launch{flex:1}}
+@media(max-width:700px){.drone-command{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:5px;padding:6px}.drone-command-copy{grid-column:1/-1;min-width:0}.drone-command-copy b{font-size:9px}.drone-command-copy small{font-size:8px}.drone-command select{min-height:34px;padding:5px;font-size:9px}.drone-command .drone-source,.drone-command .drone-type{max-width:none;width:100%}.drone-stats{align-items:center;justify-content:center;font-size:8px}.drone-command .drone-launch{min-height:34px;padding:5px;font-size:9px}.command-dock{grid-template-rows:auto auto auto}}
+
+
+/* SUICIDE-DRONE-VISIBILITY-FIX-2026-10 */
+/* زيادة وضوح لوحة القيادة دون تغيير بيانات اللعبة أو سلوك الوحدات. */
+.drone-command{display:grid;grid-template-columns:minmax(180px,1.15fr) minmax(190px,1.2fr) minmax(155px,.9fr) auto auto;align-items:center;gap:9px;padding:10px 12px}
+.drone-command-copy{min-width:0;flex:initial}
+.drone-command-copy b{font-size:14px;line-height:1.35}
+.drone-command-copy small{font-size:12px;line-height:1.5}
+.drone-command select{width:100%;min-width:0;min-height:42px;padding:8px 10px;font-size:13px}
+.drone-command .drone-source,.drone-command .drone-type{width:100%;max-width:none;min-height:42px;font-size:13px}
+.drone-stats{gap:9px;white-space:normal;font-size:12px;line-height:1.45}
+.drone-command .drone-launch{min-height:42px;padding:8px 12px;font-size:13px}
+.roster-head b{font-size:13px}
+.roster-head small{font-size:11px;line-height:1.45}
+.roster-unit{font-size:12px}
+.selected-card b,.order,.end-turn{font-size:12px}
+.selected-card small,.order-state,.battle-log{font-size:11px;line-height:1.45}
+@media(max-width:700px){
+ .command-dock{grid-template-rows:auto auto auto;gap:8px;padding:9px}
+ .roster-head{align-items:flex-start;gap:6px}
+ .roster-head>div:first-child{display:block;min-width:0}
+ .roster-head b{font-size:13px}
+ .roster-head small{font-size:11px;line-height:1.45}
+ .roster-unit{height:36px;width:42px;flex-basis:42px;font-size:12px}
+ .drone-command{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;padding:10px}
+ .drone-command-copy{grid-column:1/-1;min-width:0}
+ .drone-command-copy b{font-size:14px}
+ .drone-command-copy small{font-size:12px;line-height:1.5}
+ .drone-command select,.drone-command .drone-source,.drone-command .drone-type{width:100%;max-width:none;min-height:44px;padding:8px;font-size:12px}
+ .drone-stats{grid-column:1/-1;justify-content:flex-start;gap:10px;font-size:12px;white-space:normal}
+ .drone-command .drone-launch{grid-column:1/-1;min-height:44px;padding:9px 12px;font-size:13px;white-space:normal}
+ .selected-card{min-height:44px;padding:7px}
+ .selected-card b{font-size:12px}
+ .selected-card small,.order-state,.battle-log{font-size:11px}
+ .order,.end-turn{font-size:12px;min-height:38px}
+ .battle-log{min-height:36px;max-height:52px}
+}
+
+
+/* SUICIDE-DRONE-FLIGHT-INTERCEPTION-2026-10 */
+.drone-air-defense{pointer-events:all;cursor:pointer}.drone-defense-frame{fill:#152126e8;stroke:#71d4e4;stroke-width:6}.drone-air-defense.red .drone-defense-frame{stroke:#e58b78}.drone-defense-symbol{fill:#090e10;stroke:#d8d0b2;stroke-width:2.5;stroke-linejoin:round}.drone-defense-label,.drone-defense-stock{fill:#f2e8c7;font:900 20px Tahoma;paint-order:stroke;stroke:#142126;stroke-width:6px}.drone-defense-stock{fill:#f0d27d;font-size:16px}.drone-flight-fx,.drone-interceptor-fx{pointer-events:none}.drone-flight-path{fill:none;stroke:#f0d68c;stroke-width:3;stroke-dasharray:7 10;stroke-linecap:round;opacity:.42}.drone-flight-marker{pointer-events:none}.drone-airframe{fill:#111719;stroke:#e6d9ac;stroke-width:2.5;stroke-linejoin:round}.drone-rotor{stroke:#101719;stroke-width:2.3;stroke-linecap:round}.drone-interceptor-trail{fill:none;stroke:#e9d391;stroke-width:3;stroke-linecap:round;opacity:.8}.drone-interceptor-rocket{fill:#151b1c;stroke:#f1dfa3;stroke-width:2}.drone-intercept-mark{fill:#f1d990;stroke:#30312b;stroke-width:2.5;stroke-linejoin:round}
+
+
+/* SUICIDE-DRONE-AIRCRAFT-FLIGHT-2026-10 */
+.drone-air-defense{pointer-events:none}.drone-defense-frame{fill:#152126e8;stroke:#71d4e4;stroke-width:6}.drone-air-defense.red .drone-defense-frame{stroke:#e58b78}.drone-defense-symbol{fill:#090e10;stroke:#d8d0b2;stroke-width:2.5;stroke-linejoin:round}.drone-defense-label,.drone-defense-stock{fill:#f2e8c7;font:900 20px Tahoma;paint-order:stroke;stroke:#142126;stroke-width:6px}.drone-defense-stock{fill:#f0d27d;font-size:16px}.drone-flight-fx,.drone-interceptor-fx{pointer-events:none}.drone-flight-marker{pointer-events:none}.drone-airframe{fill:#111719;stroke:#e6d9ac;stroke-width:1.6;stroke-linejoin:round}.drone-impact-position{pointer-events:none}.drone-impact-burst{transform-box:fill-box;transform-origin:center;animation:drone-blast-expand 2.5s ease-out both}.drone-impact-flash{fill:#f1ca70;stroke:#51452d;stroke-width:1.5;stroke-linejoin:round}.drone-intercept-mark{transform-box:fill-box;transform-origin:center;animation:drone-impact-fade .24s ease-out both}@keyframes drone-impact-fade{0%{opacity:1;transform:scale(.55)}45%{opacity:.95;transform:scale(1.18)}100%{opacity:0;transform:scale(1.45)}}.drone-interceptor-trail{fill:none;stroke:#e9d391;stroke-width:3;stroke-linecap:round;opacity:.8}.drone-interceptor-rocket{fill:#151b1c;stroke:#f1dfa3;stroke-width:2}.drone-intercept-mark{fill:#f1d990;stroke:#30312b;stroke-width:2.5;stroke-linejoin:round}
+
+/* ORANE_DRONE_COMMAND_CENTER_2026_10 */
+.drone-command{display:grid;grid-template-columns:minmax(190px,1fr) minmax(190px,1fr) minmax(130px,.75fr) auto;align-items:center;gap:9px;padding:10px 12px;border:1px solid #74633b;border-radius:10px;background:linear-gradient(110deg,#172329,#202c2b 62%,#29271d)}.drone-command-copy b{font-size:13px;color:#f1d893}.drone-command-copy small{font-size:10px;line-height:1.5}.drone-source,.drone-type{min-height:40px;padding:7px 10px;border:1px solid #63777b;border-radius:7px;background:#172329;color:#f0f3eb;font:700 12px Tahoma,Arial,sans-serif}.drone-stats{font-size:11px;gap:12px}.drone-launch,.drone-plan-open{min-height:40px;padding:8px 13px;border:1px solid #e2c779;border-radius:8px;background:#b89648;color:#151c1b;font:900 12px Tahoma,Arial,sans-serif}.drone-plan-open{grid-column:1/-1;justify-self:stretch;background:#263b3d;color:#f2e8c7;border-color:#6b8582}.drone-plan-open:hover{background:#324e4e;border-color:#d9c077}.drone-airframe{fill:#020304;stroke:#080a0b;stroke-width:1.15;stroke-linejoin:round;paint-order:stroke}.drone-impact-burst{pointer-events:none;transform-box:fill-box;transform-origin:center;animation:orane-blast-in .72s ease-out both}.drone-impact-outer{fill:#c94720;stroke:#562818;stroke-width:2;stroke-linejoin:round}.drone-impact-inner{fill:#f2942d;stroke:#ffd477;stroke-width:1.3;stroke-linejoin:round}.drone-impact-core{fill:#fff2bb;stroke:#ffe19a;stroke-width:1}.drone-impact-smoke{fill:#202322;opacity:.86}.drone-impact-label{font:900 26px Tahoma;fill:#fff4cf;paint-order:stroke;stroke:#151a19;stroke-width:7px;animation:orane-label-fade .9s ease-out both}@keyframes orane-blast-in{0%{opacity:0;transform:scale(.35)}18%{opacity:1;transform:scale(1.12)}55%{opacity:.95;transform:scale(1)}100%{opacity:0;transform:scale(1.28)}}@keyframes orane-label-fade{0%,20%{opacity:1}100%{opacity:0;transform:translateY(-15px)}}
+.drone-planner{width:min(1050px,94vw);max-height:88vh;overflow:auto;padding:0;border:1px solid #667b78;border-radius:14px;background:#121d20;color:#eef3ed;box-shadow:0 24px 90px #000b}.drone-planner::backdrop{background:#050a0cbb}.planner-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:20px 22px 15px;border-bottom:1px solid #334448;background:linear-gradient(120deg,#1a2b2e,#302b1d)}.planner-kicker{color:#e2c578;font-size:11px;font-weight:900}.planner-head h2{margin:4px 0;font-size:23px;color:#f4e4b5}.planner-head p{margin:0;color:#bac9c3;font-size:13px;line-height:1.7}.planner-close{padding:8px 13px;border:1px solid #657a7d;border-radius:7px;background:#24383d;color:#eef2eb;font-weight:800}.planner-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:18px 22px 10px}.planner-grid label{display:flex;flex-direction:column;gap:6px;color:#d3ddd5;font-size:12px;font-weight:800}.planner-grid select,.planner-grid input{width:100%;min-height:42px;padding:8px 10px;border:1px solid #4e676b;border-radius:7px;background:#1b292d;color:#f3f4ee;font:700 13px Tahoma,Arial,sans-serif}.planner-range{grid-column:1/3;align-self:center;min-height:38px;padding:10px 12px;border-right:3px solid #e1c16d;border-radius:5px;background:#1b292b;color:#dfe6dd;font-size:12px;line-height:1.6}.planner-add{min-height:40px;border:1px solid #72b9a3;border-radius:8px;background:#285348;color:#e8fff3;font-size:12px;font-weight:900}.planner-add:disabled{opacity:.45}.planner-orders-head{display:flex;justify-content:space-between;align-items:center;margin:8px 22px;padding-bottom:8px;border-bottom:1px solid #334448;color:#f0dfa9}.planner-orders-head span{color:#aebdb8;font-size:11px}.planner-orders{display:grid;gap:7px;padding:0 22px 12px}.planner-empty{padding:14px;border:1px dashed #50656a;border-radius:8px;color:#aabbb6;text-align:center;font-size:12px}.planner-order{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;border:1px solid #3c5257;border-radius:8px;background:#1b292d}.planner-order-copy b,.planner-order-copy small{display:block}.planner-order-copy b{font-size:12px;color:#edf0e7}.planner-order-copy small{margin-top:4px;color:#adbfba;font-size:11px}.planner-remove{padding:6px 10px;border:1px solid #7f554b;border-radius:6px;background:#342521;color:#ffcbb5;font-weight:800}.planner-footer{display:grid;grid-template-columns:1fr auto;gap:8px;padding:14px 22px 20px;border-top:1px solid #334448;background:#172326}.planner-summary{color:#f2d98e;font-size:12px;font-weight:900}.planner-validation{grid-column:1/2;color:#b4c6bc;font-size:11px;line-height:1.6}.planner-fire{grid-column:2;grid-row:1/3;align-self:center;min-height:48px;padding:10px 18px;border:1px solid #e5cb7a;border-radius:9px;background:#c4a352;color:#151c1a;font-weight:1000}.planner-fire:disabled{opacity:.42}
+@media(max-width:850px){.drone-command{grid-template-columns:1fr 1fr}.drone-command-copy{grid-column:1/-1}.drone-plan-open{grid-column:1/-1}.planner-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding:14px}.planner-range{grid-column:1/-1}.planner-head{padding:15px}.planner-orders-head{margin:8px 14px}.planner-orders{padding:0 14px 10px}.planner-footer{padding:12px 14px 16px}}
+@media(max-width:560px){.drone-command{grid-template-columns:1fr 1fr;padding:8px}.drone-command-copy{grid-column:1/-1}.drone-stats{grid-column:1/-1;justify-content:space-around}.drone-launch,.drone-plan-open{grid-column:1/-1}.planner-grid{grid-template-columns:1fr 1fr;gap:8px}.planner-grid label{font-size:10px}.planner-grid select,.planner-grid input{font-size:11px;min-height:38px}.planner-range{font-size:10px}.planner-add{grid-column:1/-1}.planner-head h2{font-size:18px}.planner-head p{font-size:11px}.planner-footer{grid-template-columns:1fr}.planner-validation,.planner-fire{grid-column:1;grid-row:auto}.planner-fire{width:100%}}
+
+/* SUICIDE_DRONE_IMPACT_BUILDINGS_2026_10 */
+
+/* SUICIDE_DRONE_TARGETS_TURN_FX_2026_10 */
+.drone-air-defense{pointer-events:all;cursor:pointer}.drone-air-defense:focus .drone-defense-frame{stroke:#fff0a6;stroke-width:9}.drone-air-defense.red.disabled{opacity:.4}.drone-impact-position{pointer-events:none}.drone-impact-burst{transform-box:fill-box;transform-origin:center;animation:drone-blast-expand 2.5s ease-out both}.drone-impact-smoke{fill:#202725;stroke:#59605b;stroke-width:3;opacity:.98;transform-box:fill-box;transform-origin:center}.smoke-main{animation:drone-smoke-main 2.5s ease-out both}.smoke-left{animation:drone-smoke-left 2.5s ease-out both}.smoke-right{animation:drone-smoke-right 2.5s ease-out both}.smoke-top{animation:drone-smoke-top 2.5s ease-out both}@keyframes drone-blast-expand{0%{opacity:0;transform:scale(.42)}12%{opacity:1;transform:scale(1)}48%{opacity:.96;transform:scale(1.04)}100%{opacity:0;transform:scale(1.12)}}@keyframes drone-smoke-main{0%,20%{opacity:0;transform:scale(.42) translateY(13px)}42%{opacity:.98;transform:scale(1)}100%{opacity:.84;transform:scale(1.08) translateY(-8px)}}@keyframes drone-smoke-left{0%,20%{opacity:0;transform:scale(.42)}48%{opacity:.94;transform:scale(1) translate(-9px,-5px)}100%{opacity:.72;transform:scale(1.09) translate(-14px,-8px)}}@keyframes drone-smoke-right{0%,20%{opacity:0;transform:scale(.42)}48%{opacity:.94;transform:scale(1) translate(9px,-5px)}100%{opacity:.72;transform:scale(1.09) translate(14px,-8px)}}@keyframes drone-smoke-top{0%,26%{opacity:0;transform:scale(.36)}54%{opacity:.9;transform:scale(1) translateY(-5px)}100%{opacity:.64;transform:scale(1.12) translateY(-10px)}}
+
+/* SUICIDE_DRONE_RELAUNCH_FX_FIX_2026_10 */
+.drone-impact-burst{animation:none!important}.drone-impact-smoke{fill:#202725;stroke:#424744;stroke-width:2;opacity:0;filter:blur(2px);transform-box:fill-box;transform-origin:center}.smoke-main{animation:drone-smoke-linger 6s ease-out both}.smoke-left{animation:drone-smoke-lift-left 5.8s ease-out both}.smoke-right{animation:drone-smoke-lift-right 5.8s ease-out both}.smoke-top{animation:drone-smoke-lift-top 5.6s ease-out both}.drone-impact-flash{fill:#ed6a22;stroke:#ffbd61;stroke-width:2;opacity:0;animation:drone-impact-flash 560ms ease-out both}.drone-impact-label{animation:drone-label-fade 1.8s ease-out both}@keyframes drone-impact-flash{0%{opacity:0;transform:scale(.2)}9%{opacity:1;transform:scale(1)}32%{opacity:.75;transform:scale(.8)}100%{opacity:0;transform:scale(.42)}}@keyframes drone-smoke-linger{0%,8%{opacity:0;transform:scale(.24) translateY(9px)}25%{opacity:.95;transform:scale(.86)}62%{opacity:.9;transform:scale(1.02) translateY(-5px)}100%{opacity:0;transform:scale(1.18) translateY(-24px)}}@keyframes drone-smoke-lift-left{0%,10%{opacity:0;transform:scale(.3)}34%{opacity:.88;transform:scale(.92) translate(-3px,-4px)}68%{opacity:.82;transform:scale(1.04) translate(-9px,-12px)}100%{opacity:0;transform:scale(1.16) translate(-15px,-23px)}}@keyframes drone-smoke-lift-right{0%,12%{opacity:0;transform:scale(.28)}36%{opacity:.9;transform:scale(.94) translate(3px,-4px)}70%{opacity:.8;transform:scale(1.05) translate(10px,-13px)}100%{opacity:0;transform:scale(1.15) translate(15px,-24px)}}@keyframes drone-smoke-lift-top{0%,20%{opacity:0;transform:scale(.25)}46%{opacity:.86;transform:scale(.95) translateY(-4px)}76%{opacity:.72;transform:scale(1.08) translateY(-14px)}100%{opacity:0;transform:scale(1.2) translateY(-26px)}}
+
+.squad-unit.manpads-unit .unit-frame{stroke-width:7;stroke-dasharray:8 3}.squad-unit.blue.manpads-unit .unit-frame{stroke:#72e6f3}.squad-unit.red.manpads-unit .unit-frame{stroke:#f08b73}
+
+/* Guided MANPADS: compact dark missile with a muted smoke wake, never a laser beam. */
+.drone-interceptor-trail{fill:none;stroke:#c3cbc5;stroke-width:6;stroke-linecap:round;stroke-linejoin:round;opacity:.48;stroke-dasharray:5 4}.drone-interceptor-rocket{fill:#111719;stroke:#e5dec6;stroke-width:1.8;stroke-linejoin:round}.drone-interceptor-fx{pointer-events:none}
+
+
+/* MANPADS_HOMING_AIRLAB_STYLE_20261009: guided silhouette and persistent plume. */
+.drone-interceptor-fx,.drone-interceptor-burst{pointer-events:none}
+.drone-interceptor-trail{fill:none;stroke:#ffb56d;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:13 9;opacity:.9}
+.drone-interceptor-rocket{filter:drop-shadow(0 0 4px #f7a45c)}
+.drone-interceptor-body{fill:#111719;stroke:#f7ead0;stroke-width:2.6;stroke-linejoin:round}
+.drone-interceptor-flame{fill:#ff9d4d;stroke:#ffe0a6;stroke-width:1.2;transform-origin:0 10px;animation:droneRocketFlame .16s ease-in-out infinite alternate}
+.drone-interceptor-launch-flash{fill:none;stroke:#ffd08d;stroke-width:7;stroke-linecap:round;animation:droneLaunchFlash .48s ease-out both}
+.drone-interceptor-flash{fill:#ffd397;stroke:#fff0cf;stroke-width:3;animation:droneInterceptorBlast .58s ease-out both}
+.drone-interceptor-shock{fill:none;stroke:#f5c878;stroke-width:3;animation:droneInterceptorShock .52s ease-out both}
+.drone-interceptor-fragment{fill:#090d0e;stroke:#e4a26d;stroke-width:2.5;stroke-linejoin:round}
+.drone-interceptor-smoke{fill:#303734;opacity:.82;animation:droneInterceptorSmoke 1.4s ease-out both}
+.drone-interceptor-smoke.delayed{animation-delay:.12s}
+@keyframes droneRocketFlame{from{opacity:.72;transform:scaleY(.72)}to{opacity:1;transform:scaleY(1.25)}}
+@keyframes droneLaunchFlash{from{opacity:1;transform:scale(.3)}to{opacity:0;transform:scale(2)}}
+@keyframes droneInterceptorBlast{from{opacity:.95;transform:scale(.35)}to{opacity:0;transform:scale(1.8)}}
+@keyframes droneInterceptorShock{from{opacity:.9;transform:scale(.35)}to{opacity:0;transform:scale(2.2)}}
+@keyframes droneInterceptorSmoke{from{opacity:.82;transform:translateY(3px) scale(.7)}to{opacity:0;transform:translateY(-20px) scale(1.45)}}
+
+/* Strikeable depots and drone bases */
+.supply-depot{pointer-events:all;cursor:pointer}.supply-depot.disabled,.drone-base.disabled{opacity:.42;filter:grayscale(1)}
+.supply-depot.hit .depot-frame,.drone-base.hit .drone-base-frame{stroke:#ffe399;stroke-width:12}
+
+
+/* Per-building drone target feedback */
+.urban-building-hitbox{cursor:crosshair}.site-marker .urban-building-hitbox.building-damaged{fill:rgba(255,170,90,.12);stroke:#ffc16d;stroke-width:3}.site-marker .urban-building-hitbox.building-destroyed{fill:rgba(70,42,38,.18);stroke:#ed8069;stroke-width:4;stroke-dasharray:8 6}
+.site-marker .urban-building-hitbox.building-garrisoned{stroke:#7ce2c4;stroke-width:5;filter:drop-shadow(0 0 7px #64dcb988)}
+
+
+/* AIR_BATTLE_LAB_01 */
+.air-battle-command{margin:12px auto;padding:16px 18px;max-width:1600px;border:1px solid #536d62;border-radius:14px;background:linear-gradient(145deg,#172522,#101817);color:#e8eadc;box-shadow:0 12px 35px #0005;direction:rtl}.air-battle-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:13px}.air-battle-heading>div{display:grid;gap:4px}.air-battle-heading b{font-size:19px;color:#f4edd3}.air-battle-heading small{font-size:12px;color:#adb8a7}.air-battle-kicker{color:#d0b870;font-size:10px;font-weight:900;letter-spacing:.08em}.air-battle-heading>span{padding:8px 12px;border:1px solid #687b65;border-radius:8px;color:#d9d1ac;font-size:12px;white-space:nowrap}.air-battle-controls{display:grid;grid-template-columns:1.1fr 1.4fr 1fr .45fr 1fr auto;align-items:end;gap:9px}.air-battle-controls label{display:grid;gap:6px;color:#b8c0b4;font-size:11px;font-weight:700}.air-battle-controls select{width:100%;min-height:40px;padding:8px 10px;border:1px solid #43564d;border-radius:8px;background:#0e1716;color:#f3f2e9;font:700 12px Tahoma,Arial,sans-serif}.air-battle-stock{display:grid;gap:4px;min-height:40px;align-content:center;color:#afbbad;font-size:10px}.air-battle-stock b{color:#e2cc88;font-size:12px}.air-battle-controls button{min-height:42px;padding:8px 12px;border:1px solid #bda768;border-radius:8px;background:#3b3724;color:#fff2c7;font:800 12px Tahoma,Arial,sans-serif;cursor:pointer}.air-battle-controls button.armed{background:#6b4a24;color:#fff3d0;box-shadow:0 0 0 2px #d2a95455}.air-battle-controls button:disabled{opacity:.45;cursor:not-allowed}.air-battle-status{margin-top:11px;padding:9px 11px;border-right:3px solid #a89458;border-radius:4px;background:#101a18;color:#d6ddce;font-size:12px;line-height:1.6}.air-battle-status[data-state=warn]{border-color:#bd775b;color:#f1d4be}.air-battle-key{display:flex;flex-wrap:wrap;gap:7px 16px;margin-top:9px;color:#96a39a;font-size:10px}.air-theater-base{cursor:pointer;filter:drop-shadow(0 3px 3px #0008)}.air-runway{fill:none;stroke:#101617;stroke-width:15;stroke-linecap:round;opacity:.86}.air-theater-base.blue .air-runway{stroke:#5a928b}.air-theater-base.red .air-runway{stroke:#a56b59}.air-base-hangar{fill:#141a19;stroke:#c5b784;stroke-width:3}.air-theater-base.blue .air-base-hangar{stroke:#9dc5ad}.air-theater-base.red .air-base-hangar{stroke:#d09276}.air-base-roof{fill:#283331;stroke:#d6ca9f;stroke-width:3}.air-base-door{fill:#0b1111;stroke:#958e6e;stroke-width:2}.air-base-doorline,.air-base-plinth{fill:none;stroke:#c9c29d;stroke-width:2}.air-base-caption{fill:#111919;stroke:#bca969;stroke-width:2}.air-base-name,.air-base-stock-text{fill:#eee7cf;font:800 17px Tahoma,Arial,sans-serif;paint-order:stroke;stroke:#101514;stroke-width:3px;stroke-linejoin:round}.air-base-stock{fill:#17201d;stroke:#78846b;stroke-width:2}.air-base-stock-text{font-size:12px}.air-theater-base.disabled{opacity:.4;filter:grayscale(1)}.air-sortie-route{fill:none;stroke:#dec27a;stroke-width:4;stroke-linecap:round;stroke-dasharray:3 13;opacity:.55}.air-flight-icon{filter:drop-shadow(0 3px 4px #000b)}.air-plane-shadow{fill:#050808;stroke:#d1d0bd;stroke-width:6;stroke-linejoin:round;stroke-linecap:round}.air-plane-body{fill:#131817;stroke:#e2dfc8;stroke-width:1.7;stroke-linejoin:round;stroke-linecap:round}.air-rotor{fill:none;stroke:#101514;stroke-width:3;stroke-linecap:round}.air-defense-trail{fill:none;stroke:#d1a666;stroke-width:3;stroke-linecap:round;opacity:.9}.air-defense-warhead{fill:#eee2b0;stroke:#5e4c2f;stroke-width:2}.air-impact-smoke{fill:#262927;stroke:#4c5148;stroke-width:2;opacity:.88}.air-impact-flash{fill:#d08c3d;stroke:#ffe5a0;stroke-width:1.5;opacity:.9}.air-impact-label{fill:#fff0cb;font:800 13px Tahoma,Arial,sans-serif;paint-order:stroke;stroke:#161817;stroke-width:4px;stroke-linejoin:round}.air-battle-impact{animation:airImpactFade 2.4s ease-out both}.air-battle-impact.intercepted .air-impact-flash{fill:#c6bb9a;stroke:#f3ebcd}.air-battle-impact.stealth .air-impact-smoke{fill:#181a18;opacity:.96}.air-battle-impact.transport .air-impact-smoke{fill:#9a8e6c;opacity:.7}.air-battle-impact.transport .air-impact-flash{display:none}@keyframes airImpactFade{0%{opacity:0;transform:translateY(8px) scale(.45)}12%{opacity:1;transform:translateY(0) scale(1.05)}55%{opacity:.95;transform:translateY(-8px) scale(1.12)}100%{opacity:0;transform:translateY(-24px) scale(1.3)}}
+@media(max-width:900px){.air-battle-controls{grid-template-columns:repeat(3,minmax(0,1fr))}.air-battle-controls button{grid-column:span 3}.air-battle-stock{padding:4px}}@media(max-width:560px){.air-battle-command{margin:8px 6px;padding:12px}.air-battle-controls{grid-template-columns:1fr 1fr}.air-battle-controls button{grid-column:span 2}.air-battle-controls label:nth-child(2){grid-column:span 2}.air-battle-heading b{font-size:16px}.air-battle-key{font-size:9px}}
+
+/* Contextual command centers: keep the map clear until the player chooses a source. */
+.air-battle-command[hidden],.drone-command[hidden]{display:none!important}
+.air-battle-command:not([hidden]){position:fixed;z-index:10020;left:50%;bottom:92px;transform:translateX(-50%);width:min(1120px,96vw);margin:0;padding:10px 13px;max-height:31dvh;overflow:auto}
+.air-battle-heading{margin-bottom:7px}.air-battle-heading b{font-size:15px}.air-battle-heading small{font-size:10px}
+.air-battle-key{margin-top:5px}
+.command-close{margin-inline-start:auto;min-height:30px;padding:5px 10px;border:1px solid #65756a;border-radius:7px;background:#222e2b;color:#e7e6d7;font-weight:800}
+.drone-command:not([hidden]){position:fixed;z-index:10020;left:50%;bottom:92px;transform:translateX(-50%);width:min(1120px,96vw);max-height:31dvh;overflow:auto}
+.command-dock.contextual-active .roster-head{display:none}
+.command-dock.contextual-active{grid-template-rows:auto;min-height:48px}
+.command-dock.contextual-active .command-row{display:grid;grid-template-columns:1fr;min-height:34px}
+.command-dock.contextual-active .command-row>*:not(.end-turn){display:none}
+.command-dock.contextual-active .end-turn{justify-self:end}
+@media(max-width:700px){.air-battle-command:not([hidden]),.drone-command:not([hidden]){left:2vw;bottom:76px;transform:none;width:96vw;max-height:38dvh;padding:8px}.air-battle-heading{gap:7px}.air-battle-heading>span{padding:5px 7px;font-size:9px}.command-close{min-height:28px;padding:4px 7px;font-size:9px}}
+
+/* AIR_LAB_REUSED_AIRCRAFT_ART */
+/* Aircraft artwork directly reused from the current Air and Stealth Labs. */
+.air-sortie .plane{filter:none}
+.air-sortie .plane path{stroke:#87938e;stroke-width:1.35;stroke-linejoin:round;stroke-linecap:round}
+.air-sortie .plane .aircraft-wing{fill:#080c0e;stroke:#a0aaa2;stroke-width:1.5}
+.air-sortie .plane .aircraft-tail{fill:#101518;stroke:#909d97}
+.air-sortie .plane .aircraft-body{fill:#050809;stroke:#bdc5b9;stroke-width:1.7}
+.air-sortie .plane .aircraft-canopy{fill:#536569;stroke:#d0d8ca;stroke-width:.9}
+.air-sortie .plane .aircraft-panel{fill:none;stroke:#687772;stroke-width:1.4;opacity:.86}
+.air-sortie .plane .engine-line{fill:none;stroke:#74817b;stroke-width:1.2;opacity:.7}
+.air-sortie .plane .engine-pods{fill:#050708;stroke:#77847f;stroke-width:1.2}
+.air-sortie .plane .twin-fins{fill:#111719;stroke:#a3aca3;stroke-width:1.15}
+.air-sortie .helicopter .heli-fuselage{fill:#05090a;stroke:#e1e6d8;stroke-width:2.3;stroke-linejoin:round}
+.air-sortie .helicopter .heli-glass{fill:#647b7b;stroke:#d9e0d1;stroke-width:1.7}
+.air-sortie .helicopter .heli-cabin{fill:#151d1e;stroke:#aeb9ac;stroke-width:1.4}
+.air-sortie .helicopter .heli-detail{fill:none;stroke:#aeb9ac;stroke-width:1.5;stroke-linecap:round}
+.air-sortie .helicopter .heli-cabin-line{fill:none;stroke:#6c7b75;stroke-width:1.2}
+.air-sortie .helicopter .heli-stub-wings{fill:#0b1011;stroke:#c4cbbd;stroke-width:1.7}
+.air-sortie .helicopter .heli-pylons{fill:none;stroke:#d0bd83;stroke-width:2.2;stroke-linecap:round}
+.air-sortie .helicopter .heli-boom{fill:#080c0d;stroke:#d0d8ca;stroke-width:1.4}
+.air-sortie .helicopter .heli-stabilizer{fill:#101617;stroke:#aab4a8;stroke-width:1.4}
+.air-sortie .helicopter .heli-skids{fill:none;stroke:#c0c8b8;stroke-width:2;stroke-linecap:round}
+.air-sortie .helicopter .heli-rotor-blade{fill:#161c1c;stroke:#dde3d4;stroke-width:1.3;stroke-linejoin:round}
+.air-sortie .helicopter-rotor,.air-sortie .heli-tail-rotor{transform-box:fill-box;transform-origin:50% 50%;animation:heli-rotor-spin .5s linear infinite}
+.air-sortie .helicopter .heli-tail-blades{fill:#c9d1c4;stroke:#111718;stroke-width:1}
+.air-sortie .helicopter-ah64 .heli-fuselage{fill:#050809;stroke:#f0e5c3;stroke-width:2.5}
+.air-sortie .helicopter-ah64 .heli-pylons{stroke:#e4c878;stroke-width:2.8}
+.air-sortie .helicopter-uh60 .heli-fuselage{fill:#080d0e;stroke:#c5d0bf;stroke-width:2.4}
+.air-sortie .helicopter-uh60 .heli-cabin{fill:#4c5e5b;stroke:#d0d8ca;stroke-width:1.5}
+.air-sortie .b2-plane{filter:drop-shadow(0 3px 4px #000b)}
+.air-sortie .b2-plane path{fill:#060a0b;stroke:#d0d8ca;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.air-sortie .b2-plane .canopy{fill:#566966;stroke:#dfe6d4;stroke-width:1.6}
+.air-sortie .b2-plane .engine-detail{fill:none;stroke:#82918a;stroke-width:2;opacity:.8}
+.air-sortie .b2-plane .wing-panel{fill:none;stroke:#626f6a;stroke-width:1.7}
+@keyframes heli-rotor-spin{to{transform:rotate(360deg)}}
+
+/* AIR_BATTLE_FLIGHT_PRESENTATION_V1 */
+.air-sortie-route.air-sortie-planned{fill:none;stroke:#f2d27d;stroke-width:5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:16 10;opacity:.98;filter:drop-shadow(0 0 4px #070b0acc)}
+
+/* AIR_BATTLE_FLIGHT_LAB_SYNC_FIX_V1 */
+.air-sortie-lab-style .plane{filter:drop-shadow(0 2px 4px #000d)}.air-sortie-lab-style .plane path{stroke:#c8d0c6;stroke-width:1.5;stroke-linejoin:round;stroke-linecap:round}.air-sortie-lab-style .plane .aircraft-wing{fill:#080c0e;stroke:#a0aaa2;stroke-width:1.6}.air-sortie-lab-style .plane .aircraft-tail{fill:#101518;stroke:#909d97;stroke-width:1.4}.air-sortie-lab-style .plane .aircraft-body{fill:#050809;stroke:#bdc5b9;stroke-width:1.8}.air-sortie-lab-style .plane .aircraft-canopy{fill:#536569;stroke:#d0d8ca;stroke-width:1}.air-sortie-lab-style .plane .aircraft-panel{fill:none;stroke:#7a8882;stroke-width:1.4;opacity:.9}.air-sortie-lab-style .plane .engine-line{fill:none;stroke:#87938e;stroke-width:1.4}.air-sortie-lab-style .plane .engine-pods{fill:#050708;stroke:#89948d;stroke-width:1.35}.air-sortie-lab-style .plane .twin-fins{fill:#111719;stroke:#b2bcb2;stroke-width:1.25}.air-sortie-lab-style .helicopter .heli-fuselage{fill:#05090a;stroke:#e1e6d8;stroke-width:2.3;stroke-linejoin:round}.air-sortie-lab-style .helicopter .heli-glass{fill:#647b7b;stroke:#d9e0d1;stroke-width:1.7}.air-sortie-lab-style .helicopter .heli-cabin{fill:#151d1e;stroke:#aeb9ac;stroke-width:1.4}.air-sortie-lab-style .helicopter .heli-detail,.air-sortie-lab-style .helicopter .heli-cabin-line{fill:none;stroke:#aeb9ac;stroke-width:1.5}.air-sortie-lab-style .helicopter .heli-stub-wings{fill:#0b1011;stroke:#c4cbbd;stroke-width:1.7}.air-sortie-lab-style .helicopter .heli-pylons,.air-sortie-lab-style .helicopter .heli-skids{fill:none;stroke:#d0bd83;stroke-width:2}.air-sortie-lab-style .helicopter .heli-boom{fill:#080c0d;stroke:#d0d8ca;stroke-width:1.4}.air-sortie-lab-style .helicopter .heli-stabilizer{fill:#101617;stroke:#aab4a8;stroke-width:1.4}.air-sortie-lab-style .helicopter .heli-rotor-blade{fill:#161c1c;stroke:#dde3d4;stroke-width:1.3}.air-sortie-lab-style .helicopter-rotor,.air-sortie-lab-style .heli-tail-rotor{transform-box:fill-box;transform-origin:50% 50%;animation:airBattleLabRotor .5s linear infinite}.air-sortie-lab-style .helicopter-ah64 .heli-fuselage{stroke:#f0e5c3;stroke-width:2.5}.air-sortie-lab-style .helicopter-uh60 .heli-cabin{fill:#4c5e5b;stroke:#d0d8ca;stroke-width:1.5}.air-sortie-route.air-route-out{stroke:#f0d37e;stroke-width:6;stroke-dasharray:18 9;opacity:.98}.air-sortie-route.air-route-escape{stroke:#e7a96b;stroke-width:5;stroke-dasharray:10 9;opacity:.94}.air-sortie-route.air-route-back{stroke:#8ed0cf;stroke-width:4;stroke-dasharray:6 11;opacity:.86}.air-battle-munition-trail{fill:none;stroke:#e8bd72;stroke-width:4;stroke-linecap:round;opacity:.88;filter:drop-shadow(0 0 3px #d89943)}.air-battle-munition-body{fill:#111718;stroke:#e7e0c8;stroke-width:1.8;stroke-linejoin:round}.air-strike-scorch{fill:#171715;opacity:.8}.air-strike-flame{fill:#d48a42;stroke:#f1bd6a;stroke-width:1.4;opacity:.92;transform-origin:center;animation:airStrikeFlame .8s ease-in-out infinite alternate}.air-strike-smoke{fill:#292d2a;stroke:#555b53;stroke-width:1.3;opacity:.82;animation:airStrikeSmoke 5.2s ease-out both}.air-strike-impact .air-impact-label{font-size:12px}.air-strike-impact{pointer-events:none}.air-sortie-lab-style .air-sortie-route{pointer-events:none}@keyframes airBattleLabRotor{to{transform:rotate(360deg)}}@keyframes airStrikeSmoke{0%{opacity:0;transform:translateY(12px) scale(.45)}18%{opacity:.82}72%{opacity:.66;transform:translateY(-38px) scale(1.55)}100%{opacity:0;transform:translateY(-58px) scale(1.85)}}@keyframes airStrikeFlame{from{opacity:.6;transform:scale(.86,.92)}to{opacity:1;transform:scale(1.08,1.12)}}
+
+/* AIR_BATTLE_SCALE_ANCHORED_FX_V1 */
+.air-strike-impact{transform-box:view-box;pointer-events:none}.air-strike-scorch{transform:none!important}.air-strike-flame{transform-box:fill-box;transform-origin:50% 100%;animation:airStrikeFlame .8s ease-in-out infinite alternate}.air-strike-smoke{transform-box:fill-box;transform-origin:50% 100%;animation:airStrikeSmoke 5.8s ease-out both}@keyframes airStrikeSmoke{0%{opacity:0;transform:translate(0,0) scale(.42)}16%{opacity:.78}68%{opacity:.62;transform:translate(0,-24px) scale(1.25)}100%{opacity:0;transform:translate(0,-34px) scale(1.5)}}
+
+/* AIR_BATTLE_CONTINUOUS_STRIKE_V1 */
+
+/* AIR_BATTLE_BASE_LOADOUT_IMPACT_V1 */
+.air-strike-burst{fill:#f0c66f;stroke:#fff0c0;stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:50% 50%;animation:airStrikeBurst .55s ease-out both;filter:drop-shadow(0 0 8px #e5a640)}.air-strike-flame{transform-box:fill-box;transform-origin:50% 100%}.air-strike-smoke{transform-box:fill-box;transform-origin:50% 100%}@keyframes airStrikeBurst{0%{opacity:0;transform:scale(.18)}20%{opacity:.96;transform:scale(.7)}55%{opacity:.78;transform:scale(1.08)}100%{opacity:0;transform:scale(1.28)}}
+
+/* AIR_BATTLE_ROUTE_UI_FIX_V1 */
+.air-battle-controls label[hidden]{display:none!important}
+
+/* AIR_BATTLE_FIGHTER_MISSIONS_V1 */
+.air-battle-controls label[hidden]{display:none!important}.air-route-full{stroke-dasharray:3 10;stroke-width:3.5;opacity:.58}
+
+/* AIR_BATTLE_STEALTH_TRANSFER_V1 */
+.air-sortie.air-stealth-transfer .b2-plane{filter:drop-shadow(0 3px 4px #000b)}
+.air-sortie.air-stealth-transfer .b2-plane path{fill:#060a0b;stroke:#d0d8ca;stroke-width:2.2;stroke-linejoin:round;stroke-linecap:round}
+.air-sortie.air-stealth-transfer .b2-plane .canopy{fill:#566966;stroke:#dfe6d4;stroke-width:1.6}
+.air-sortie.air-stealth-transfer .b2-plane .engine-detail{fill:none;stroke:#82918a;stroke-width:2;opacity:.8}
+.air-sortie.air-stealth-transfer .b2-plane .wing-panel{fill:none;stroke:#626f6a;stroke-width:1.7}
+.air-sortie.air-stealth-transfer .air-sortie-route{fill:none;stroke:#e3cf8b;stroke-width:7;stroke-linecap:round;stroke-dasharray:18 14;opacity:.62;pointer-events:none}
+.air-sortie.air-stealth-transfer .air-stealth-ingress{stroke:#e3cf8b;opacity:.65}
+.air-sortie.air-stealth-transfer .air-stealth-attack{stroke:#fff0ad;stroke-width:11;stroke-dasharray:22 12;opacity:.96}
+.air-sortie.air-stealth-transfer .air-stealth-return{stroke:#a9c6b9;stroke-width:6;stroke-dasharray:7 17;opacity:.58}
+.air-sortie.air-stealth-transfer .path-geometry{fill:none;stroke:none;opacity:0;pointer-events:none}
+.air-battle-stealth-impact .impact-ground{fill:#171b19;opacity:.77}
+.air-battle-stealth-impact .impact-flash{fill:#f8d98b;filter:drop-shadow(0 0 12px #f6ad49);animation:airStealthImpactFlash .36s ease-out both}
+.air-battle-stealth-impact .impact-ring{fill:none;stroke:#efcc76;stroke-width:9;animation:airStealthImpactRing .62s ease-out both}
+.air-battle-stealth-impact .impact-smoke{fill:#242a29;opacity:.8;filter:drop-shadow(0 2px 4px #000d);animation:airStealthImpactSmoke 2.7s ease-out both}
+.air-sortie.air-stealth-transfer .bomb-fall{fill:#141a1a;stroke:#eee5cc;stroke-width:5}
+.air-sortie.air-stealth-transfer .bomb-trail{fill:none;stroke:#e7e0ca;stroke-width:8;stroke-linecap:round;opacity:.8}
+.path-geometry{fill:none;stroke:none;opacity:0;pointer-events:none}
+@keyframes airStealthImpactFlash{from{opacity:.92;transform:scale(.45)}to{opacity:0;transform:scale(1.4)}}
+@keyframes airStealthImpactRing{from{opacity:.9;r:22}to{opacity:0;r:145}}
+@keyframes airStealthImpactSmoke{from{opacity:.8;transform:translateY(0) scale(.55)}to{opacity:0;transform:translateY(-70px) scale(1.8)}}
+
+/* AIR_BATTLE_STEALTH_AREA_TARGET_V1: targeting remains map-area based for stealth aircraft. */
+
+/* AIR_BATTLE_STEALTH_COMMAND_DETAILS_V1 */
+.air-battle-controls input[type=range]{width:100%;min-height:32px;accent-color:#d0b870}.air-battle-stealth-plan{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:8px;padding:8px 11px;border:1px solid #7b704a;border-radius:8px;background:#252719;color:#f0e1a6;font-size:11px}.air-battle-stealth-plan[hidden]{display:none}.air-battle-stealth-plan button{padding:6px 10px;border:1px solid #86794c;border-radius:6px;background:#34301f;color:#f5e8bc;font:700 11px Tahoma,Arial,sans-serif}.air-battle-stealth-plan-layer{pointer-events:none}.air-battle-stealth-plan-line{fill:none;stroke:#f0d17d;stroke-width:8;stroke-dasharray:18 12;stroke-linecap:round;opacity:.9;vector-effect:non-scaling-stroke}.air-battle-stealth-plan-dot circle{fill:#191a16;fill-opacity:.86;stroke:#ffe69a;stroke-width:5;vector-effect:non-scaling-stroke}.air-battle-stealth-plan-dot text{fill:#fff0be;font:900 18px Tahoma,Arial,sans-serif;paint-order:stroke;stroke:#141713;stroke-width:4px;stroke-linejoin:round}
+
+/* AIR_BATTLE_STEALTH_ROUTE_ALIGNMENT_FIX_V1 */
+.air-sortie.air-stealth-transfer .air-stealth-leader-route{stroke-width:7;opacity:.68}
+.air-sortie.air-stealth-transfer .air-stealth-wingman-route{stroke-width:4;stroke-dasharray:10 15;opacity:.34}
+
+/* CITY_OBJECT_REGISTRY_STYLE_V1 */
+
+/* AIR_BATTLE_CITY_PALETTE_V2 */
+.site-marker[data-city-style="tactical"] .urban-street{stroke:#baa891;stroke-width:5;stroke-opacity:.18;stroke-linecap:round}
+.site-marker[data-city-style="tactical"] .city-name-plaque{fill:#30362f;fill-opacity:.86;stroke-width:2}
+.site-marker[data-city-style="tactical"] .site-name{font-size:27px;stroke-width:3;fill:#e1d8bf}
+.site-marker[data-city-style="tactical"] .site-type{font-size:18px;stroke-width:4;fill:#d9caaa}
+.city-object{pointer-events:none}
+.city-short-shadow{fill:#302d27;fill-opacity:.22;stroke:none}
+.city-roof-edge{fill:none;stroke:#dfd7bd;stroke-width:2;stroke-opacity:.6}
+.city-wall-detail{fill:none;stroke:#8b816d;stroke-width:1.5;stroke-opacity:.6}
+.city-symbol-window{fill:#515e5a;stroke:#ddd0b4;stroke-width:1}
+.city-symbol-opening{fill:#54564c;stroke:#8a806b;stroke-width:1}
+.city-object .apartment-front{fill:var(--city-wall);stroke:#514f45;stroke-width:2}
+.city-object .apartment-side{fill:var(--city-side);stroke:#514f45;stroke-width:2}
+.city-object .apartment-roof{fill:var(--city-roof);stroke:#514f45;stroke-width:2}
+.city-object .factory-front,.city-object .market-front,.city-object .city-core-front{fill:var(--city-wall);stroke:#514f45;stroke-width:2}
+.city-object .factory-side,.city-object .city-core-side{fill:var(--city-side);stroke:#514f45;stroke-width:2}
+.city-object .market-roof,.city-object .city-core-roof{fill:var(--city-roof);stroke:#514f45;stroke-width:2}
+.city-object .city-core-dome{fill:#98a49a;stroke:#59665b;stroke-width:2}
+.city-object .factory-shadow,.city-object .city-core-shadow{fill:#302d27;fill-opacity:.18}
+.city-damage-cracks{display:none;fill:none;stroke:#6d5948;stroke-width:2.5;stroke-linejoin:round}
+.city-object.is-damaged .city-damage-cracks{display:block}
+.city-object.is-damaged .city-standing{opacity:.78}
+.city-rubble{display:none}
+.city-object.is-ruined .city-standing{display:none}
+.city-object.is-ruined .city-rubble{display:block}
+.city-rubble-bed{fill:#79634f;fill-opacity:.28;stroke:none}
+.city-rubble-wall{fill:#a18f75;stroke:#6c6050;stroke-width:2;stroke-linejoin:round}
+.city-rubble-roof{fill:#6b7770;stroke:#525b52;stroke-width:2;stroke-linejoin:round}
+.city-rubble-stones{fill:#c6b291;stroke:#877862;stroke-width:1}
+.city-garrison-mark{display:none;fill:#254d46;stroke:#bbdace;stroke-width:2.5}
+.city-object.is-garrisoned .city-garrison-mark{display:block}
+.city-garrison-check{fill:none;stroke:#e6efda;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.site-marker[data-city-style="tactical"] .urban-building-hitbox.building-damaged{fill:transparent;stroke:#b7a283;stroke-opacity:.35;stroke-width:2}
+.site-marker[data-city-style="tactical"] .urban-building-hitbox.building-destroyed{fill:transparent;stroke:#ac947b;stroke-opacity:.28;stroke-width:2;stroke-dasharray:5 8}
+.site-marker[data-city-style="tactical"] .urban-building-hitbox.building-garrisoned{fill:transparent;stroke:#93bbaa;stroke-opacity:.4;stroke-width:2;filter:none}
+
+/* AIR_BATTLE_STEALTH_SYSTEM_V2 */
+.air-sortie.air-stealth-v2{pointer-events:none}
+.air-sortie.air-stealth-v2 .stealth-v2-plane{filter:none;pointer-events:none}
+.air-sortie.air-stealth-v2 .stealth-v2-plane path{stroke-linejoin:round;stroke-linecap:round;stroke:none}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-shadow{fill:#071010;stroke:none}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-skin{fill:#313f43;stroke:#a3b2ab;stroke-width:2.4}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-left{fill:#465459}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-right{fill:#2c3b40}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-spine{fill:#536166}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-shoulder{fill:#788b8b;opacity:.35}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-glass{fill:#172a30;stroke:#a4b8b2;stroke-width:1.7}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-windowline{fill:none;stroke:#7c9594;stroke-width:1.4}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-intake{fill:#172225;stroke:#657575;stroke-width:1.4}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-exhaust{fill:#172125;stroke:#677675;stroke-width:1.2}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-lip{fill:none;stroke:#b1bdb2;stroke-width:1.6}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-panel{fill:none;stroke:#82938f;stroke-width:1.5;opacity:.7}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-edge{fill:none;stroke:#b1bfb4;stroke-width:2.4;opacity:.75}
+.air-sortie.air-stealth-v2 .stealth-v2-plane .stealth-v2-bank{fill:#081318;opacity:0}
+.stealth-v2-route{fill:none;stroke:#d8c98e;stroke-width:1.15;stroke-dasharray:5 7;stroke-linecap:round;opacity:.28;vector-effect:non-scaling-stroke;pointer-events:none;filter:none}
+.stealth-v2-route.stealth-v2-attack{stroke:#e8d7a0;opacity:.42;stroke-dasharray:7 5}
+.stealth-v2-route.stealth-v2-return{stroke:#b0c2b7;opacity:.20;stroke-dasharray:3 9}
+.stealth-v2-preview .stealth-v2-route{opacity:.60;stroke-width:1.4}
+.stealth-v2-preview .stealth-v2-return{opacity:.36}
+.stealth-v2-target circle{fill:#2b3028;fill-opacity:.48;stroke:#e9d8a5;stroke-width:1.4;vector-effect:non-scaling-stroke}
+.stealth-v2-target path{fill:none;stroke:#f2e4bb;stroke-width:1;vector-effect:non-scaling-stroke}
+.air-stealth-v2 .stealth-v2-bomb-body{fill:#3a443f;stroke:#c9c9ac;stroke-width:2;stroke-linejoin:round}
+
+
+/* AIR_BATTLE_STEALTH_DAMAGE_V1 */
+.stealth-damage-effect{pointer-events:none}
+.stealth-damage-ghost{animation:stealth-damage-vanish .85s ease-out forwards}
+.stealth-damage-flash{animation:stealth-damage-flash .35s ease-out forwards}
+.stealth-damage-ring{animation:stealth-damage-ring .65s ease-out forwards;transform-box:fill-box;transform-origin:center}
+.stealth-damage-fire{animation:stealth-damage-vanish .65s ease-out forwards}
+.stealth-damage-smoke{animation:stealth-damage-smoke 1.25s ease-out both}
+@keyframes stealth-damage-vanish{0%,18%{opacity:1}100%{opacity:0}}
+@keyframes stealth-damage-flash{0%{opacity:1}100%{opacity:0}}
+@keyframes stealth-damage-ring{from{opacity:.8;transform:scale(.5)}to{opacity:0;transform:scale(2.5)}}
+@keyframes stealth-damage-smoke{from{opacity:.5;transform:translateY(0)}to{opacity:0;transform:translateY(-65px)}}
+
+
+/* AIR_BATTLE_REFINERY_COMPACT_V2 */
+.enemy-oil-refinery{filter:none!important}
+.enemy-oil-refinery.red-owned.destroyed .refinery-structure{opacity:0;filter:none}
+.enemy-oil-refinery.damaged .refinery-column{fill:#5e655b}
+.enemy-oil-refinery .refinery-structure{transition:opacity .35s ease-out}
+.refinery-rubble{fill:#625c4f;stroke:#393d36;stroke-width:4}
+.refinery-v2-fire{pointer-events:none}
+.refinery-v2-flame{fill:#df7731;animation:refinery-v2-flicker .85s ease-in-out var(--delay) infinite alternate;transform-box:fill-box;transform-origin:bottom center}
+.refinery-v2-ember{animation:refinery-v2-flicker .62s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:bottom center}
+.refinery-v2-smoke{fill:#363b3b;animation:refinery-v2-rise var(--time) linear var(--delay) infinite}
+.refinery-v2-fire[data-stage=ruin] .refinery-v2-flame{fill:#c97032}
+@keyframes refinery-v2-flicker{from{opacity:.8;transform:scale(.9,.82)}to{opacity:1;transform:scale(1.04,1.1)}}
+@keyframes refinery-v2-rise{0%{opacity:0;transform:translate(0,0) scale(.7)}14%{opacity:.48}55%{opacity:.32}100%{opacity:0;transform:translate(var(--drift),calc(-1 * var(--rise))) scale(1.65)}}
+
+
+/* AIR_BATTLE_VISUAL_REFRESH_V1: Air Battle Lab presentation only. */
+.squad-unit .unit-frame{fill:#283e43;stroke-width:3;filter:none}
+.squad-unit.red .unit-frame{fill:#443e39}
+.squad-unit.armored .unit-frame,.squad-unit.blue.armored .unit-frame,.squad-unit.red.armored .unit-frame{stroke:currentColor;stroke-width:3;filter:none}
+.squad-unit.selected .unit-frame,.squad-unit.armored.selected .unit-frame{stroke:#f2dfac;stroke-width:5;filter:drop-shadow(0 0 4px #e5cb8a66)}
+.squad-unit .unit-silhouette{stroke:none;filter:none}
+.squad-unit .armor-detail{opacity:.25;stroke:#e0dec5;stroke-width:1}
+.squad-unit .unit-caption{fill:#172b30;stroke:currentColor;stroke-width:1.5}
+.squad-unit .unit-nationality-tag{fill:#1c3034;stroke:#9ba99b;stroke-width:1}
+.squad-unit .unit-nationality-text{fill:#e4dfc9;font-size:12px;letter-spacing:1px}
+.squad-unit .unit-frame{rx:10}
+.drone-base .drone-base-frame{fill:#2c4145;stroke-width:3;filter:none}
+.drone-base.red .drone-base-frame{fill:#453f37}
+.armor-shot-fx{pointer-events:none}
+.armor-shot-fx .armor-shot-tracer{stroke:#f7dd99;stroke-width:3;filter:none}
+.armor-shot-fx .armor-muzzle-flash{stroke:#fff1bc;stroke-width:5;filter:none}
+.armor-hit-halo{fill:#f9b859;animation:visual-hit-halo .48s ease-out both;transform-box:fill-box;transform-origin:center}
+.armor-hit-dust{fill:#a8997d;animation:visual-hit-dust .6s ease-out both;transform-box:fill-box;transform-origin:center}
+.armor-hit-sparks{fill:none;stroke:#ffe2a0;stroke-width:2.3;animation:visual-hit-halo .55s ease-out both;transform-box:fill-box;transform-origin:center}
+@keyframes visual-hit-halo{0%{opacity:.95;scale:.3}55%{opacity:.65}100%{opacity:0;scale:1.7}}
+@keyframes visual-hit-dust{0%{opacity:0;scale:.5}30%{opacity:.5}100%{opacity:0;scale:1.5}}
+.air-sortie-lab-style .plane .aircraft-wing{fill:#849c9e;stroke:#263c45;stroke-width:1.2}
+.air-sortie-lab-style .plane .aircraft-body{fill:#c1ceca;stroke:#304750;stroke-width:1.2}
+.air-sortie-lab-style .plane .aircraft-tail{fill:#627e84;stroke:#243c43;stroke-width:1}
+.air-sortie-lab-style .plane .aircraft-canopy{fill:#244c61;stroke:#a5d3d8;stroke-width:.9}
+.air-sortie-lab-style .plane .aircraft-panel{stroke:#435f69;stroke-width:1;fill:none}
+.air-sortie-lab-style .plane .engine-pods{fill:#4a6067;stroke:#293d45;stroke-width:1}
+.air-sortie-lab-style .plane .twin-fins{fill:#899f9e;stroke:#304850}
+.air-sortie-lab-style .plane.aircraft-su24 .aircraft-wing{fill:#a6aca0}
+.air-sortie-lab-style .plane.aircraft-mig29 .aircraft-wing{fill:#87998c}
+.air-sortie-lab-style .helicopter .heli-fuselage{fill:#879478;stroke:#263c36;stroke-width:1.4}
+.air-sortie-lab-style .helicopter .heli-glass{fill:#2c5360;stroke:#b7d0bf;stroke-width:1}
+.air-sortie-lab-style .helicopter .heli-cabin{fill:#526b60;stroke:#bcc7a6}
+.air-sortie-lab-style .helicopter .heli-boom,.air-sortie-lab-style .helicopter .heli-stabilizer,.air-sortie-lab-style .helicopter .heli-stub-wings{fill:#9aa787;stroke:#30463f}
+.air-sortie-lab-style .helicopter .heli-detail{stroke:#c5cbb0;fill:none}
+.air-sortie-lab-style .helicopter .heli-rotor-blade{fill:#34464a;stroke:#97aca6;stroke-width:.6}
+.air-sortie-lab-style .helicopter .heli-rotor-hub{fill:#c4c9b1}
+.air-strike-impact .air-strike-scorch{fill:#453e32;opacity:.3}
+.air-strike-impact .air-strike-smoke{fill:#68685e;filter:none;animation:visual-strike-smoke 2.6s ease-out both}
+.air-strike-impact .air-strike-burst{fill:#ffe0a1;filter:none;animation:visual-hit-halo .55s ease-out both;transform-box:fill-box;transform-origin:center}
+.air-strike-impact .air-strike-flame{fill:#ec9b48;animation:visual-hit-halo .9s ease-out both;transform-box:fill-box;transform-origin:center}
+@keyframes visual-strike-smoke{0%{opacity:0;transform:translate(0,0) scale(.6)}15%{opacity:.5}100%{opacity:0;transform:translate(16px,-55px) scale(2.2)}}
+
+/* AIR_BATTLE_LAYERED_DEFENSE_V2 — scoped to this lab. */
+.ad-range-layer,.ad-track-layer,.ad-missile-layer{pointer-events:none}
+.ad-coverage .ad-sensor{fill:#75cad0;fill-opacity:.018;stroke:#88d1d5;stroke-width:2;stroke-dasharray:12 16;stroke-opacity:.5}
+.ad-coverage .ad-engagement{fill:#d7ae6f;fill-opacity:.018;stroke:#e2b776;stroke-width:2.5;stroke-opacity:.65}
+.ad-coverage.red .ad-engagement{stroke:#e09b7b}
+.ad-coverage .ad-minimum{fill:none;stroke:#dc8c79;stroke-width:1.5;stroke-dasharray:5 10;opacity:.6}
+.ad-coverage .ad-gun-range{fill:none;stroke:#e5d6a2;stroke-width:2;stroke-dasharray:5 10;opacity:.6}
+.ad-sweep{fill:#80d5d3;opacity:.1;animation:ad-scan 8s linear infinite;transform-origin:0 0}
+@keyframes ad-scan{to{transform:rotate(360deg)}}
+.ad-range-label{fill:#d5e0d6;font-size:19px;paint-order:stroke;stroke:#21373b;stroke-width:4}
+.ad-v2-unit .ad-card{fill:#2b4145;stroke:#82c4ce;stroke-width:2.5}
+.ad-v2-unit.red .ad-card{fill:#443f3b;stroke:#d59a80}
+.ad-v2-unit .ad-name{fill:#eee2c1;font-size:18px;font-weight:700;paint-order:stroke;stroke:#243738;stroke-width:4}
+.ad-v2-unit .ad-stock,.ad-v2-unit .ad-state{fill:#d2e3dc;font-size:16px;paint-order:stroke;stroke:#233538;stroke-width:4}
+.ad-v2-unit .ad-led{fill:#82bdaa}
+.ad-v2-unit[data-ad-state="engage"] .ad-led{fill:#ffcc78}
+.ad-v2-unit[data-ad-state="silent"] .ad-led,.ad-v2-unit[data-ad-state="empty"] .ad-led{fill:#858983}
+.ad-v2-unit.disabled{opacity:.5;filter:grayscale(1)}
+.ad-contact path{fill:none;stroke-width:2.5}
+.ad-contact .acquiring{stroke:#83c8cf;stroke-dasharray:7 4}
+.ad-contact .locked{stroke:#edc884}
+.ad-contact text{font-size:17px;fill:#f1dfba;paint-order:stroke;stroke:#27393c;stroke-width:4}
+.ad-missile-trail{fill:none;stroke:#ded6b0;stroke-width:2.3;opacity:.55}
+.ad-missile-body{fill:#e5dec1;stroke:#374b4b;stroke-width:1}
+.ad-projectile.gun .ad-missile-body{stroke:#ffe2a5;stroke-width:3}
+.ad-projectile.gun .ad-missile-trail{stroke:#e3bf78;stroke-width:1;opacity:.4}
+.ad-intercept-burst{animation:ad-burst .65s ease-out both}
+@keyframes ad-burst{0%{opacity:1}100%{opacity:0}}
+#adPanel{position:absolute;right:12px;top:52px;z-index:18;width:300px;max-width:calc(100% - 24px);max-height:65%;overflow:auto;background:#20343aee;border:1px solid #86a5a3;border-radius:12px;padding:13px;color:#eee9d4;box-shadow:0 8px 24px #07171a44;font-family:inherit;box-sizing:border-box;}
+#adPanel[hidden]{display:none}
+#adPanel header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:16px}
+#adPanel label{display:flex;align-items:center;gap:8px;margin:8px 0;font-size:13px}
+#adPanel select{min-width:0;flex:1;color:#e8e3cc;background:#314b50;border:1px solid #789591;border-radius:6px;padding:5px;font-family:inherit;font-size:12px}
+#adPanel dl{display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;margin:9px 0}
+#adPanel dt{color:#b2c9c6}#adPanel dd{margin:0;text-align:left}
+#adPanel p{font-size:11px;color:#bdcdc5;line-height:1.65;margin-bottom:0}
+#adPanel .ad-key{display:flex;gap:8px;font-size:11px;color:#dcc99f;margin:8px 0 13px}
+#adPanel .ad-actions{display:flex;gap:5px;flex-wrap:wrap}
+#adPanel button{background:#355157;color:#eee3c4;border:1px solid #698d8c;border-radius:6px;padding:5px 8px;font:inherit;font-size:12px;cursor:pointer}
+#adPanel button:disabled{opacity:.4;cursor:default}
+@media(max-width:600px){#adPanel{top:8px;right:8px;width:270px;max-height:57%}}
+@media(prefers-reduced-motion:reduce){.ad-sweep{animation:none}}
+
+/* AIR_BATTLE_DEFENSE_VISIBILITY_FIX_V1 */
+.ad-coverage .ad-sensor{stroke:#78ceda;stroke-width:1.25;stroke-opacity:.72;fill-opacity:.018;vector-effect:non-scaling-stroke;stroke-dasharray:8 9}
+.ad-coverage .ad-engagement{stroke:#ebbc78;stroke-width:1.35;stroke-opacity:.78;fill-opacity:.012;vector-effect:non-scaling-stroke}
+.ad-coverage.red .ad-engagement{stroke:#efa282}
+.ad-coverage .ad-radar-ring{fill:none;stroke:#80d3df;stroke-width:.75;stroke-opacity:.34;vector-effect:non-scaling-stroke}
+.ad-coverage .ad-minimum,.ad-coverage .ad-gun-range{stroke-width:.85;vector-effect:non-scaling-stroke;opacity:.65}
+.ad-coverage .ad-sweep{opacity:.075}
+
+/* AIR_BATTLE_CONVENTIONAL_V3 — excludes all stealth selectors. */
+.tactical-v3 .tac-airframe{stroke-linejoin:round}
+.tactical-v3 .tac-wing{fill:#8b9fa1;stroke:#293f49;stroke-width:1.1}
+.tactical-v3 .tac-body{fill:#c3ceca;stroke:#314750;stroke-width:1.2}
+.tactical-v3 .tac-tail{fill:#9daea9;stroke:#30464c;stroke-width:1}
+.tactical-v3 .tac-engine{fill:#657a7f;stroke:#31434b;stroke-width:1}
+.tactical-v3 .tac-intake{fill:#2e454e;stroke:#9cafaa;stroke-width:1}
+.tactical-v3 .tac-glass{fill:#284a60;stroke:#a2c6ce;stroke-width:.9}
+.tactical-v3 .tac-fin{fill:#7c9296;stroke:#314a53;stroke-width:1}
+.tactical-v3 .tac-panel{fill:none;stroke:#7c9294;stroke-width:.7}
+.tactical-v3 .tac-pylon{fill:none;stroke:#d0d5c1;stroke-width:2}
+.tactical-v3 .tac-mark{fill:none;stroke:#d4d8cb;stroke-width:2}
+.tactical-v3 .aircraft-a10 .tac-wing{fill:#8e9d8c}
+.tactical-v3 .aircraft-su24 .tac-wing{fill:#8c9b9b}
+.tactical-v3 .helicopter .heli-fuselage{fill:#7a8e77;stroke:#31473f;stroke-width:1.3}
+.tactical-v3 .helicopter .heli-glass{fill:#315465;stroke:#b9ccc0;stroke-width:.9}
+.tactical-v3 .helicopter .heli-pylons{stroke:#d0c6a2;stroke-width:2.4}
+.tactical-v3 .helicopter .heli-skids{fill:none;stroke:#253e43;stroke-width:2}
+.tac-impact,.tac-shell-fx,.tac-munition{pointer-events:none}
+.tac-damage-label{fill:#f2ddad;stroke:#26383b;stroke-width:3;paint-order:stroke;font-size:19px;font-weight:bold}
+.tac-munition-body{fill:#a6ad91;stroke:#35464a;stroke-width:1}
+.tac-munition-trail{stroke:#d0c7a4;stroke-width:1.6;opacity:.4;stroke-linecap:round}
+
+/* AIR_BATTLE_MISSILE_FX_V4 — visual only */
+.missile-v4-smoke,.missile-v4-body{pointer-events:none}
+.missile-v4-core-trail{stroke:#cbcabb;stroke-linecap:round;stroke-linejoin:round;fill:none}
+.missile-v4-flame{transform-box:fill-box;transform-origin:right center;animation:missile-v4-thrust .12s ease-in-out infinite alternate}
+.missile-v4-hot{transform-box:fill-box;transform-origin:right center;animation:missile-v4-thrust .085s ease-in-out infinite alternate-reverse}
+@keyframes missile-v4-thrust{from{scale:.82 1;opacity:.76}to{scale:1.08 .82;opacity:1}}
+.tac-impact-v4{pointer-events:none}
+@media(prefers-reduced-motion:reduce){.missile-v4-flame,.missile-v4-hot{animation:none}}
+
+/* Rebellion identity; combat systems retain internal side IDs. */
+.rebellion-brief{display:flex;flex-wrap:wrap;gap:8px 24px;padding:12px 22px;background:#202b35;color:#cbd6df;border-bottom:1px solid #63717c;font:14px Tahoma,sans-serif}.rebellion-brief strong{color:#f0cf8b}
+.rebel-lab .squad-unit.red .unit-card{fill:#414b56;stroke:#bac3cd}
+.rebel-lab .squad-unit.red{--unit-side:#b7c2ce;--side-color:#b7c2ce}
+.rebel-lab .hex.red-owned{fill:#697581;stroke:#8994a0}
+.rebel-lab .legend .red{background:#a0aab4}
+
+.rebel-lab{--war-ui-red:#aab5c0}
+.rebel-lab .territory.red-territory{fill:#525e69;stroke:#525e69}
+.rebel-lab .squad-unit.red{color:#c3cbd4}
+.rebel-lab .red-owned .site-frame{stroke:#c3cbd4}
+.rebel-lab .urban-ground[data-owner="red"]{fill:#77848e;fill-opacity:.47}
+.rebel-lab .red-side i,.rebel-lab .red-dot{background:#aab5c0}
+.rebel-lab .rebellion-brief{padding:5px 9px;font-size:11px;gap:4px 14px;border-radius:6px;margin-bottom:4px}
+@media(max-width:700px){.rebel-lab .rebellion-brief{font-size:9px}.rebel-lab .rebellion-brief span:nth-child(3){display:none}}
+
+.rebel-lab .squad-unit.red .unit-frame,.rebel-lab .drone-base.red .drone-base-frame{fill:#414c57;stroke:#c3cbd4}
+.rebel-lab .red-owned .urban-boundary,.rebel-lab .red-owned .city-name-plaque,.rebel-lab .supply-depot.red .depot-frame{stroke:#aebbc7}
+.rebel-lab .supply-convoy.red .convoy-truck{fill:#aebbc7}
+
+/* Layered limestone massifs; static geometry and quiet colors keep the units legible. */
+.rebel-massifs{pointer-events:none}.massif-foot{fill:#626553;fill-opacity:.6;stroke:none}.massif-shadow{fill:#263238;opacity:.3}.massif-sun{fill:#a7a28b;stroke:#575e57;stroke-width:1.8;stroke-linejoin:round}.massif-shade{fill:#65736e;stroke:none}.massif-facet{fill:#828d79;opacity:.9}.massif-ridge{fill:none;stroke:#d2cab0;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}.massif-scree{fill:none;stroke:#4b5e57;stroke-width:2;opacity:.55}.massif-contour{fill:none;stroke:#b5ad8b;stroke-width:2;opacity:.35}.massif-name{font:700 38px Tahoma,sans-serif;fill:#cfc9ac;letter-spacing:3px;paint-order:stroke;stroke:#354540;stroke-width:5;opacity:.9}.massif-pass{fill:none;stroke:#e0c781;stroke-width:6;stroke-linecap:round}.massif-pass-plaque{fill:#233c40;stroke:#baa371;stroke-width:2;fill-opacity:.94}.massif-pass-name{font:700 27px Tahoma,sans-serif;fill:#e6d6a1}.rebel-terrain-guide{max-width:560px;width:90vw;background:#1d2d33;color:#dce5e5;border:1px solid #8d9d96;border-radius:16px;padding:22px;font:15px/1.9 Tahoma,sans-serif}.rebel-terrain-guide h2{font-size:20px;color:#e0c781}.rebel-terrain-guide button{padding:9px 20px;background:#d0b675;color:#18272b;border:0;border-radius:8px}.rebel-terrain-guide::backdrop{background:#07151899}
+
+/* SUPPORT-04: reachable movement wins over ownership/range colors. */
+.ground-upgrade .territory.reachable{fill:#498f91;fill-opacity:.7;stroke:#a5f7ec;stroke-opacity:1;stroke-width:2.5;stroke-dasharray:none;vector-effect:non-scaling-stroke}
+.ground-upgrade .territory.selected-cell{stroke:#fff0a5;stroke-opacity:1;stroke-width:3}
+.ground-upgrade .roster-unit[data-role="katyusha"],.ground-upgrade .roster-unit[data-role="fieldArtillery"],.ground-upgrade .roster-unit[data-role="mortar"]{min-width:62px;font-size:12px}
+
+.ground-upgrade .command-dock.contextual-active .roster-head{display:flex}
+.ground-upgrade .drone-command:not([hidden]){bottom:132px;box-sizing:border-box}
+#mapDroneTray{position:fixed;bottom:8px;left:2%;right:2%;z-index:90;background:#edf0df;color:#213c44;border:2px solid #6b9aa0;border-radius:12px;padding:10px;box-shadow:0 5px 20px #0006;max-height:35vh;overflow:auto;font:14px system-ui}#mapDroneTray[hidden]{display:none}#mapDroneTray button,#mapDroneTray select{background:#234b5c;color:#fff;border:1px solid #7d9d9e;border-radius:7px;padding:7px;margin:3px}#mapDroneTray button:disabled{opacity:.45}#mapDroneTray input{width:45px;padding:5px;background:#fff;color:#193139;border:1px solid #8ca29b;border-radius:5px}.map-plan-head,.map-plan-tabs,.map-plan-rows{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.map-plan-rows article{display:flex;align-items:center;gap:9px;background:#d4dfd4;padding:6px;border-radius:7px}.map-plan-rows label{display:flex;gap:4px;align-items:center;font-size:12px}@media(max-width:600px){#mapDroneTray{left:4px;right:4px;max-height:38vh;font-size:12px}.map-plan-rows article{width:100%;gap:5px}.map-plan-head{gap:2px}}
+#mapDroneTray{z-index:10040}body.drone-planning .command-dock{visibility:hidden}body.drone-planning .drone-command{display:none!important}
+/* POLISH-08: same command language as the air and ground controls. */
+#mapDroneTray{background:linear-gradient(135deg,#20323b,#14232c);color:#e4e7df;border:1px solid #708981;box-shadow:0 -5px 20px #07111677;border-top:2px solid #baa36b;font-family:Tahoma,system-ui;font-size:13px;padding:12px 16px;border-radius:12px 12px 6px 6px}
+#mapDroneTray .map-plan-head{color:#e7d49e;font-weight:700;border-bottom:1px solid #53676a;padding-bottom:6px;margin-bottom:7px}
+#mapDroneTray button,#mapDroneTray select{background:#23353e;color:#e6e9e3;border:1px solid #61787b;border-radius:6px;padding:7px 12px;box-shadow:inset 0 1px #ffffff0a}
+#mapDroneTray button:hover:not(:disabled){background:#354c54;border-color:#c1ac75}
+#mapDroneTray input{background:#13242d;color:#e8e5d3;border-color:#637978}
+#mapDroneTray .map-plan-rows article{background:#1b2b34;border:1px solid #465d61;color:#e3e7df}
+#mapDroneTray .map-plan-tabs button{border-bottom:2px solid #ab9768}
+.facility-hit-area{cursor:crosshair}.supply-depot,.drone-base,.ad-v2-unit{cursor:pointer}
+#effects{pointer-events:none}.ad-range-layer,.ad-track-layer,.ad-missile-layer{pointer-events:none!important}
+@media(max-width:600px){body.drone-planning .top-actions,body.drone-planning .rebellion-brief,body.drone-planning .force-line{display:none}body.drone-planning .topbar{padding:5px;min-height:0}body.drone-planning .topbar h1{font-size:15px;margin:0}body.drone-planning .eyebrow{display:none}body.drone-planning .map-head{padding:4px}#mapDroneTray{padding:8px;max-height:36vh}}
+/* Helicopter materials and rotor motion also apply in the tactical flight layer. */
+.tactical-v3 .helicopter .heli-boom,.tactical-v3 .helicopter .heli-stabilizer,.tactical-v3 .helicopter .heli-stub-wings{fill:#71886f;stroke:#30483f;stroke-width:1.2}
+.tactical-v3 .helicopter .heli-cabin{fill:#586e61;stroke:#a8b8a1;stroke-width:.8}
+.tactical-v3 .helicopter .heli-detail,.tactical-v3 .helicopter .heli-cabin-line{fill:none;stroke:#b1bea3;stroke-width:1}
+.tactical-v3 .helicopter .heli-rotor-blade{fill:#374e4d;stroke:#9cae9d;stroke-width:.5;opacity:.68}
+.tactical-v3 .helicopter .heli-rotor-hub,.tactical-v3 .helicopter .heli-tail-hub{fill:#c0c6aa;stroke:#3a5149;stroke-width:1}
+.tactical-v3 .helicopter-rotor{transform-box:fill-box;transform-origin:50% 50%;animation:airBattleLabRotor .22s linear infinite}
+.tactical-v3 .heli-tail-blades{fill:#586f64;transform-box:fill-box;transform-origin:50% 50%;animation:airBattleLabRotor .16s linear infinite}
+.air-support-panel{background:#172b32;border:1px solid #41616a;border-radius:12px;padding:12px;margin-top:10px;color:#dfebe5;display:grid;gap:12px;font:14px/1.7 Tahoma,sans-serif}.air-support-panel [hidden]{display:none!important}.air-support-panel label{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.air-support-panel input{width:18px;height:18px;accent-color:#78cbb6}.air-support-panel button,.air-support-panel select{background:#24434c;color:#edf3e8;border:1px solid #63817f;border-radius:7px;padding:8px 12px;margin:3px}.air-support-panel button:disabled{opacity:.45}.air-support-panel small{display:block;color:#bac9c4}.air-support-panel p{margin:5px 0}.air-support-panel span{color:#b8c9c4;font-size:12px}.air-support-panel b{color:#a9dfcf}.tanker-support,.air-support-v11,.air-transfer{pointer-events:none}.tanker-support .tac-airframe{filter:drop-shadow(8px 12px 5px #091a2355)}.helicopter-ah1z .heli-fuselage{fill:#75918a}.helicopter-ah1z .heli-boom{fill:#839a90}
+#droneType[hidden],.drone-stats[hidden],#droneLaunchOrder[hidden]{display:none!important}#droneMoveMode{background:#24434c;color:#e5f0eb;border:1px solid #73b6c5;border-radius:9px;padding:10px 16px}#airSupportFeedback{padding:8px 10px;border-right:3px solid #82c6b1;margin:0;color:#edf3df}#airSupportFeedback:empty{display:none}#airSupportFeedback[data-state=warn]{border-color:#e3b574;color:#f4d69f}#airHeliTask{font-weight:700}#mapDroneTray .map-plan-rows article>span{line-height:1.7;max-width:390px}
+
+/* Clearer rock strata, restrained contrast beneath unit symbols. */
+.massif-foot{fill:#626c61;fill-opacity:.38}.massif-sun{fill:#9c9d88}.massif-shade{fill:#667870}.massif-facet{fill:#839180;opacity:.7}.massif-ridge{stroke:#c8c3a8;stroke-width:2}.massif-gully{fill:none;stroke:#465e59;stroke-width:3;opacity:.55}.squad-unit.mountain-posted{filter:drop-shadow(0 3px 3px #132b35)}#uavMissionBrief{display:flex;gap:10px;align-items:center;color:#dfdfcb;font-size:12px}#uavMissionBrief[hidden]{display:none}#uavMissionBrief svg{flex-shrink:0}

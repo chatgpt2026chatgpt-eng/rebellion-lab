@@ -1,0 +1,37 @@
+.ground-upgrade .squad-unit .unit-frame{stroke-width:7;filter:none;stroke-dasharray:none}
+.ground-upgrade .squad-unit.blue .unit-frame{fill:#153f6c;stroke:#56d4ff}
+.ground-upgrade .squad-unit.red .unit-frame{fill:#673f2a;stroke:#ffac67}
+.ground-upgrade.rebel-lab .squad-unit.red .unit-frame{fill:#d7dcda;stroke:#303c48}
+.ground-upgrade .squad-unit .identity-banner{fill:#092949;stroke:none}
+.ground-upgrade .squad-unit.red .identity-banner{fill:#432718}
+.ground-upgrade.rebel-lab .squad-unit.red .identity-banner{fill:#313d49}
+.ground-upgrade .identity-emblem{fill:#67d9ff;stroke:#daf5ff;stroke-width:1.5}
+.ground-upgrade .red .identity-emblem{fill:#ffb474;stroke:#ffe4c7}
+.ground-upgrade.rebel-lab .red .identity-emblem{fill:#cfb574;stroke:#f4e7c8}
+.ground-upgrade .identity-name{font:700 17px Tahoma,sans-serif;fill:#f3f7f8}
+.ground-upgrade .armor-tier-star{fill:#ffdd76;stroke:#725729;stroke-width:1}
+.ground-upgrade .identity-side-mark{fill:none;stroke:#56d4ff;stroke-width:4}
+.ground-upgrade .red .identity-side-mark{stroke:#ffb474;stroke-width:5}
+.ground-upgrade.rebel-lab .red .identity-side-mark{stroke:#9a793b}
+.ground-upgrade .identity-selection{fill:none;stroke:#fff9d9;stroke-width:4;stroke-dasharray:12 5;opacity:0}
+.ground-upgrade .selected .identity-selection,.ground-upgrade .squad-unit:focus .identity-selection{opacity:1}
+.ground-upgrade .attack-target .identity-selection{opacity:1;stroke:#ffd18d;stroke-dasharray:4 6}
+.ground-upgrade .squad-unit.blue .unit-caption{fill:#092949;stroke:#56d4ff}
+.ground-upgrade .squad-unit.red .unit-caption{fill:#432718;stroke:#ffac67}
+.ground-upgrade.rebel-lab .squad-unit.red .unit-caption{fill:#313d49;stroke:#e3d4aa}
+.ground-upgrade .squad-unit .unit-unmoved-marker{r:7;cx:67;cy:-52;filter:none;stroke-width:2}
+.ground-upgrade .squad-unit.hit-flash .identity-selection{opacity:1;stroke:#fff;stroke-dasharray:none}
+.ground-upgrade .supply-depot.blue .depot-frame,.ground-upgrade .drone-base.blue .drone-base-frame{fill:#153f6c;stroke:#56d4ff}
+.ground-upgrade.rebel-lab .supply-depot.red .depot-frame,.ground-upgrade.rebel-lab .drone-base.red .drone-base-frame{fill:#444f5b;stroke:#d8c18b}
+.ground-upgrade .facility-destroyed{opacity:.55}
+.ground-upgrade .facility-destroyed .depot-symbol,.ground-upgrade .facility-destroyed .visual-drone-launcher{opacity:.25}
+.ground-upgrade .facility-ruin{fill:none;stroke:#c1b9aa;stroke-width:5;pointer-events:none}
+.faction-key{display:flex;gap:14px;align-items:center;flex-wrap:wrap;font:700 11px Tahoma,sans-serif;color:#e8eeec;padding:7px 10px;background:#1c2c37;border:1px solid #61707c;border-radius:7px}
+.faction-key span{display:inline-flex;align-items:center;gap:6px}.faction-key i{display:inline-block;width:14px;height:14px;border:2px solid #56d4ff;background:#153f6c;border-radius:3px}
+.faction-key .opponent{background:#673f2a;border-color:#ffac67;transform:rotate(45deg);border-radius:0}
+.rebel-lab .faction-key .opponent{background:#d7dcda;border-color:#bc9b55}
+.faction-key .tier-key{color:#ffdd76}
+.ground-upgrade .facility-choice{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:10030;box-sizing:border-box;width:min(440px,94vw);padding:12px;background:#132b3a;color:#f0f4f0;border:2px solid #c3b07c;border-radius:12px;font:14px/1.6 Tahoma,sans-serif;box-shadow:0 8px 30px #0008}
+.facility-choice p{margin:0 0 8px}.facility-choice button{margin:3px;padding:8px 13px;border:1px solid #d4c088;border-radius:7px;background:#244b64;color:#fff;cursor:pointer}.facility-choice button:disabled{opacity:.45;cursor:default}
+.ground-upgrade #objectiveStatus{white-space:normal;font-size:12px}
+@media(max-width:700px){.faction-key{font-size:10px;gap:8px}.faction-key .tier-key{font-size:10px}}
